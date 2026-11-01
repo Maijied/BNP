@@ -15,14 +15,14 @@
   "model": "",
   "turn_id": "ed548bfc1cf5",
   "redaction": {
-    "replacements": 91,
+    "replacements": 100,
     "layers": {
-      "betterleaks": 20,
+      "betterleaks": 23,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 18,
       "credentialed_uri": 0,
-      "entropy": 68,
+      "entropy": 74,
       "key_context": 0,
       "provider_token": 0,
       "shell_stdin": 0
