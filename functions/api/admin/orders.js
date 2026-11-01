@@ -1,0 +1,56 @@
+// Cloudflare Pages Function: /api/admin/orders
+export async function onRequestGet() {
+  const sampleOrders = [
+    {
+      id: 1,
+      order_number: "BNP-20261101-7890",
+      created_at: new Date().toISOString().slice(0, 19).replace("T", " "),
+      name: "Tariqul Islam",
+      shop_name: "Dhaka Moto Care",
+      phone: "01712345678",
+      district: "Dhaka",
+      address: "Mirpur 10, Dhaka",
+      model: "A",
+      reg_number_bangla: "ঢাকা মেট্রো-ল ১২-৩৪৫৬",
+      quantity: 1,
+      bracket: true,
+      plate_price: 380,
+      bracket_price: 80,
+      delivery_charge: 60,
+      total_amount: 520,
+      payment_method: "lorahost_bridge",
+      payment_status: "paid",
+      lorahost_session_id: "lh_sbx_001",
+      status: "processing",
+      tracking_number: "STEADFAST-998822",
+    },
+    {
+      id: 2,
+      order_number: "BNP-20261101-6543",
+      created_at: new Date(Date.now() - 3600000).toISOString().slice(0, 19).replace("T", " "),
+      name: "Rafiqul Hasan",
+      shop_name: null,
+      phone: "01812345678",
+      district: "Chattogram",
+      address: "Agrabad C/A, Chattogram",
+      model: "B",
+      reg_number_bangla: "চট্টগ্রাম মেট্রো-হ ৯৮-৭৬৫৪",
+      quantity: 2,
+      bracket: false,
+      plate_price: 450,
+      bracket_price: 0,
+      delivery_charge: 120,
+      total_amount: 1020,
+      payment_method: "lorahost_bridge",
+      payment_status: "paid",
+      lorahost_session_id: "lh_sbx_002",
+      status: "new",
+      tracking_number: null,
+    },
+  ];
+
+  return new Response(JSON.stringify({ orders: sampleOrders }), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
+}
