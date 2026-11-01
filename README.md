@@ -22,6 +22,13 @@ BNP (Bike Number Plate) is a modern full-stack e-commerce platform and administr
 
 ---
 
+## Documentation & Roadmap
+
+- **Operations & Deployment Runbook**: [`docs/DEPLOYMENT_GUIDE.md`](docs/DEPLOYMENT_GUIDE.md)
+- **Engineering Roadmap & Next Phases**: [`docs/NEXT_PLANS.md`](docs/NEXT_PLANS.md)
+
+---
+
 ## Tech Stack
 
 - **Framework**: Next.js 14+ (App Router, TypeScript, React)
