@@ -1,14 +1,27 @@
 "use client";
 
 import React, { useState } from "react";
-import { AlertCircle, FileText, ShoppingBag, Truck, Lock } from "lucide-react";
+import { useStorefront } from "@/components/StorefrontContext";
+import { PlateModel, PaymentMethod } from "@/lib/types";
+import {
+  AlertCircle,
+  FileText,
+  ShoppingBag,
+  Truck,
+  Lock,
+  CreditCard,
+  Smartphone,
+  CheckCircle,
+  ArrowRight,
+  Loader2,
+} from "lucide-react";
 
 const BD_DISTRICTS = [
   "Dhaka", "Chattogram", "Cumilla", "Gazipur", "Narayanganj", "Sylhet", "Rajshahi",
   "Khulna", "Barishal", "Rangpur", "Mymensingh", "Bagerhat", "Bandarban", "Barguna",
-  "Barishal", "Bhola", "Bogura", "Brahmanbaria", "Chandpur", "Chapai Nawabganj",
-  "Chuadanga", "Cox's Bazar", "Dinajpur", "Faridpur", "Feni", "Gaibandha", "Gopalganj",
-  "Habiganj", "Jamalpur", "Jashore", "Jhalokati", "Jhenaidah", "Joypurhat", "Khagrachhari",
+  "Bhola", "Bogura", "Brahmanbaria", "Chandpur", "Chapai Nawabganj", "Chuadanga",
+  "Cox's Bazar", "Dinajpur", "Faridpur", "Feni", "Gaibandha", "Gopalganj", "Habiganj",
+  "Jamalpur", "Jashore", "Jhalokati", "Jhenaidah", "Joypurhat", "Khagrachhari",
   "Kishoreganj", "Kurigram", "Kushtia", "Lakshmipur", "Lalmonirhat", "Madaripur",
   "Magura", "Manikganj", "Meherpur", "Moulvibazar", "Munshiganj", "Naogaon", "Narail",
   "Narsingdi", "Natore", "Netrokona", "Nilphamari", "Noakhali", "Pabna", "Panchagarh",
@@ -17,11 +30,28 @@ const BD_DISTRICTS = [
 ];
 
 export default function OrderForm() {
-  const [model, setModel] = useState<"A" | "B">("A");
-  const [quantity, setQuantity] = useState(1);
-  const [bracket, setBracket] = useState(false);
-  const [district, setDistrict] = useState("Dhaka");
-  const [regNumber, setRegNumber] = useState("ঢাকা মেট্রো-ল ১২-৩৪৫৬");
+  const {
+    model,
+    setModel,
+    plateText,
+    setPlateText,
+    quantity,
+    setQuantity,
+    bracket,
+    setBracket,
+    district,
+    setDistrict,
+  } = useStorefront();
+
+  const [name, setName] = useState("");
+  const [shopName, setShopName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("lorahost_bridge");
+  const [trxId, setTrxId] = useState("");
+  const [agreedToWhatsApp, setAgreedToWhatsApp] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   // Dynamic calculations
   const unitPrice = model === "A" ? 380 : 450;
@@ -29,6 +59,65 @@ export default function OrderForm() {
   const bracketTotal = bracket ? 80 * quantity : 0;
   const deliveryCharge = district === "Dhaka" ? 60 : 120;
   const grandTotal = plateTotal + bracketTotal + deliveryCharge;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMsg("");
+
+    if (!agreedToWhatsApp) {
+      setErrorMsg("Please acknowledge the WhatsApp registration verification requirement.");
+      return;
+    }
+
+    if (!/^01[3-9]\d{8}$/.test(phone.trim())) {
+      setErrorMsg("Please enter a valid 11-digit Bangladesh mobile number (e.g. 017XXXXXXXX).");
+      return;
+    }
+
+    if (paymentMethod !== "lorahost_bridge" && !trxId.trim()) {
+      setErrorMsg("Please enter the bKash / Nagad Transaction ID for manual verification.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          shop_name: shopName.trim() || undefined,
+          phone: phone.trim(),
+          district,
+          address: address.trim(),
+          model,
+          reg_number_bangla: plateText.trim(),
+          quantity,
+          bracket,
+          payment_method: paymentMethod,
+          trx_id: paymentMethod !== "lorahost_bridge" ? trxId.trim() : undefined,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to process order. Please try again.");
+      }
+
+      if (data.checkout_url) {
+        // Redirect to LoraHost Payment Bridge
+        window.location.href = data.checkout_url;
+      } else {
+        // Manual verification success
+        window.location.href = `/payment/success?order_number=${data.order_number}&method=${paymentMethod}`;
+      }
+    } catch (err: any) {
+      setErrorMsg(err.message || "An unexpected error occurred. Please contact our hotline.");
+      setLoading(false);
+    }
+  };
 
   return (
     <section id="order" className="py-16 sm:py-24 bg-carbon-900 border-b border-carbon-700/60 relative">
@@ -47,7 +136,7 @@ export default function OrderForm() {
 
         {/* WhatsApp Registration Notice (Mandatory Requirement) */}
         <div className="bg-gradient-to-r from-red-950/60 via-carbon-850 to-red-950/60 border-2 border-bnp/50 rounded-2xl p-5 mb-8 shadow-glass-panel">
-          <div className="flex items-start gap-3">
+          <div className="flex items-start gap-3.5">
             <AlertCircle className="w-5 h-5 text-bnp shrink-0 mt-0.5" />
             <div>
               <h4 className="text-sm font-bold text-white flex items-center gap-2">
@@ -57,15 +146,21 @@ export default function OrderForm() {
                 </span>
               </h4>
               <p className="text-xs text-silver-300 mt-1 font-sans leading-relaxed">
-                To guarantee 100% legal BRTA compliance, customers <strong>must send a photo of the motorcycle registration certificate / blue book via WhatsApp to 01914-873925</strong> after submitting this order.
+                To guarantee 100% legal BRTA compliance, customers <strong>must send a clear photo of the motorcycle registration certificate / blue book via WhatsApp to 01914-873925</strong> after submitting this order.
                 Plates are stamped strictly matching the official registration record.
               </p>
             </div>
           </div>
         </div>
 
+        {errorMsg && (
+          <div className="bg-red-900/40 border border-red-500 text-red-200 text-xs p-4 rounded-xl mb-6">
+            {errorMsg}
+          </div>
+        )}
+
         {/* Order Form Card */}
-        <form onSubmit={(e) => e.preventDefault()} className="bg-carbon-850 rounded-2xl border border-carbon-700 p-6 sm:p-8 shadow-glass-panel">
+        <form onSubmit={handleSubmit} className="bg-carbon-850 rounded-2xl border border-carbon-700 p-6 sm:p-8 shadow-glass-panel">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
             {/* Customer Name */}
             <div>
@@ -75,6 +170,8 @@ export default function OrderForm() {
               <input
                 type="text"
                 required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Joy Hasan"
                 className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-3 text-sm text-white placeholder-silver-600 focus:outline-none focus:border-bnp transition-colors"
               />
@@ -87,6 +184,8 @@ export default function OrderForm() {
               </label>
               <input
                 type="text"
+                value={shopName}
+                onChange={(e) => setShopName(e.target.value)}
                 placeholder="e.g. Joy & Arash Motors"
                 className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-3 text-sm text-white placeholder-silver-600 focus:outline-none focus:border-bnp transition-colors"
               />
@@ -100,6 +199,8 @@ export default function OrderForm() {
               <input
                 type="tel"
                 required
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
                 placeholder="01XXXXXXXXX"
                 pattern="^01[3-9]\d{8}$"
                 className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-3 text-sm text-white placeholder-silver-600 focus:outline-none focus:border-bnp transition-colors font-mono"
@@ -132,6 +233,8 @@ export default function OrderForm() {
               <textarea
                 required
                 rows={2}
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
                 placeholder="House #, Road #, Area, Thana, District"
                 className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-silver-600 focus:outline-none focus:border-bnp transition-colors"
               />
@@ -176,7 +279,7 @@ export default function OrderForm() {
                 <button
                   type="button"
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-10 h-10 rounded-xl bg-carbon-800 border border-carbon-700 text-white font-bold hover:bg-carbon-700"
+                  className="w-10 h-10 rounded-xl bg-carbon-800 border border-carbon-700 text-white font-bold hover:bg-carbon-700 transition-colors"
                 >
                   -
                 </button>
@@ -186,7 +289,7 @@ export default function OrderForm() {
                 <button
                   type="button"
                   onClick={() => setQuantity(quantity + 1)}
-                  className="w-10 h-10 rounded-xl bg-carbon-800 border border-carbon-700 text-white font-bold hover:bg-carbon-700"
+                  className="w-10 h-10 rounded-xl bg-carbon-800 border border-carbon-700 text-white font-bold hover:bg-carbon-700 transition-colors"
                 >
                   +
                 </button>
@@ -201,11 +304,14 @@ export default function OrderForm() {
               <input
                 type="text"
                 required
-                value={regNumber}
-                onChange={(e) => setRegNumber(e.target.value)}
+                value={plateText}
+                onChange={(e) => setPlateText(e.target.value)}
                 placeholder="e.g. ঢাকা মেট্রো-ল ১২-৩৪৫৬"
                 className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-3 text-base text-white font-bangla font-bold placeholder-silver-600 focus:outline-none focus:border-bnp transition-colors"
               />
+              <span className="text-[11px] text-silver-500 font-sans mt-1 block">
+                Synchronized automatically with the Plate Designer above.
+              </span>
             </div>
 
             {/* Clamp Bracket Addon */}
@@ -229,8 +335,62 @@ export default function OrderForm() {
             </div>
           </div>
 
+          {/* Payment Method Selection */}
+          <div className="mb-8 border-t border-carbon-700/80 pt-6">
+            <label className="block text-xs font-semibold text-silver-300 mb-3">
+              Select Advance Payment Channel *
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+              <label
+                onClick={() => setPaymentMethod("lorahost_bridge")}
+                className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all ${
+                  paymentMethod === "lorahost_bridge"
+                    ? "bg-bnp/10 border-bnp text-white"
+                    : "bg-carbon-800 border-carbon-700 text-silver-400"
+                }`}
+              >
+                <CreditCard className="w-5 h-5 text-bnp" />
+                <div className="text-xs">
+                  <span className="font-bold text-white block">Instant Online Payment</span>
+                  <span className="text-[11px] text-silver-400">bKash, Nagad, Visa, Mastercard</span>
+                </div>
+              </label>
+
+              <label
+                onClick={() => setPaymentMethod("manual_bkash")}
+                className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all ${
+                  paymentMethod !== "lorahost_bridge"
+                    ? "bg-bnp/10 border-bnp text-white"
+                    : "bg-carbon-800 border-carbon-700 text-silver-400"
+                }`}
+              >
+                <Smartphone className="w-5 h-5 text-yellow-400" />
+                <div className="text-xs">
+                  <span className="font-bold text-white block">Manual Send Money</span>
+                  <span className="text-[11px] text-silver-400">Send Money to 01632333221</span>
+                </div>
+              </label>
+            </div>
+
+            {paymentMethod !== "lorahost_bridge" && (
+              <div className="p-4 rounded-xl bg-carbon-800 border border-carbon-700 mb-4">
+                <p className="text-xs text-silver-300 mb-2">
+                  Please Send Money <strong className="text-white">৳ {grandTotal} BDT</strong> to our official personal wallet: <strong className="text-yellow-400 font-mono">01632333221</strong> (bKash/Nagad), then enter your TrxID below:
+                </p>
+                <input
+                  type="text"
+                  required
+                  value={trxId}
+                  onChange={(e) => setTrxId(e.target.value)}
+                  placeholder="e.g. BL9A8X7K2M"
+                  className="w-full bg-carbon-900 border border-carbon-700 rounded-lg px-3 py-2 text-sm text-white font-mono uppercase focus:outline-none focus:border-bnp"
+                />
+              </div>
+            )}
+          </div>
+
           {/* Pricing Breakdown Card */}
-          <div className="bg-carbon-900 rounded-xl p-5 border border-carbon-700/80 mb-8 space-y-2 text-xs sm:text-sm">
+          <div className="bg-carbon-900 rounded-xl p-5 border border-carbon-700/80 mb-6 space-y-2 text-xs sm:text-sm">
             <div className="flex justify-between text-silver-400">
               <span>Plate Price (Model {model} × {quantity}):</span>
               <span className="text-white font-mono">৳ {plateTotal}</span>
@@ -251,17 +411,45 @@ export default function OrderForm() {
             </div>
           </div>
 
+          {/* WhatsApp Paper Checkbox Agreement */}
+          <div className="mb-6">
+            <label className="flex items-start gap-3 p-3.5 bg-carbon-800/80 rounded-xl border border-carbon-700 cursor-pointer">
+              <input
+                type="checkbox"
+                required
+                checked={agreedToWhatsApp}
+                onChange={(e) => setAgreedToWhatsApp(e.target.checked)}
+                className="w-4 h-4 rounded text-bnp focus:ring-0 bg-carbon-900 border-carbon-600 mt-0.5"
+              />
+              <span className="text-xs text-silver-300 leading-relaxed">
+                I confirm that the registration number above is correct, and I agree to send a clear photo of my vehicle registration paper / bluebook via WhatsApp to <strong className="text-white font-mono">01914-873925</strong> after order submission.
+              </span>
+            </label>
+          </div>
+
           {/* Advance Policy & Submit Button */}
           <div className="flex flex-col gap-3">
             <button
               type="submit"
-              className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-bnp to-bnp-hover hover:from-bnp-hover hover:to-bnp text-white font-bold py-4 rounded-xl shadow-bnp-glow transition-all text-base"
+              disabled={loading}
+              className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-bnp to-bnp-hover hover:from-bnp-hover hover:to-bnp text-white font-bold py-4 rounded-xl shadow-bnp-glow transition-all text-base disabled:opacity-50"
             >
-              <Lock className="w-4 h-4" />
-              <span>Proceed to Payment (৳ {grandTotal} BDT)</span>
+              {loading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>Processing Order...</span>
+                </>
+              ) : (
+                <>
+                  <Lock className="w-4 h-4" />
+                  <span>
+                    {paymentMethod === "lorahost_bridge" ? "Pay via LoraHost Bridge" : "Submit Order (Manual TrxID)"} (৳ {grandTotal} BDT)
+                  </span>
+                </>
+              )}
             </button>
             <p className="text-center text-[11px] text-silver-500 font-sans">
-              🔒 100% Secure Checkout via LoraHost Payment Bridge (bKash, Nagad, Visa, Mastercard)
+              🔒 100% Secure Checkout • Full advance only • Zero COD • Joy & Arash Enterprise
             </p>
           </div>
         </form>
