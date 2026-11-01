@@ -231,3 +231,20 @@ The BNP repository integrates with **Entire** (`https://entire.com`) for trackin
   ```
 - **Loragent Entire Specialist**: Automated orchestration agent available in Loragent:
   - Invoked via `loragent-entire-specialist` for managing trails, verifying eval scores (Risk, Intent Drift, Slop), and reviewing session checkpoints.
+
+---
+
+## 9. Cloudflare Pages & Functions Architecture (`bnp.lorapok.tech`)
+
+The live storefront and sandbox portal is hosted on **Cloudflare Pages** under `https://bnp.lorapok.tech`:
+
+- **Pages Project**: `bnp` (`bnp-6ej.pages.dev`)
+- **Custom Domain**: `bnp.lorapok.tech` (Cloudflare SSL / HTTP/2 proxy)
+- **Static Assets (`out/`)**: Next.js 14 static export with optimized interactive client components (`next build` with `output: "export"`).
+- **Edge Functions (`functions/`)**: Cloudflare Pages Functions execute dynamically on Cloudflare V8 Workers:
+  - `functions/api/order.js`: Order validation, dynamic pricing calculation, and session creation with LoraHost Payment Bridge.
+  - `functions/api/order/[orderNumber].js`: Dynamic receipt and order status lookup.
+  - `functions/api/payment/webhook.js`: LoraHost Payment Bridge callback ingestion.
+  - `functions/api/admin/*`: Lightweight edge admin authentication and management endpoints.
+- **Continuous Deployment**: Automated build on GitHub push via `npm run build` with `destination_dir: "out"`.
+
