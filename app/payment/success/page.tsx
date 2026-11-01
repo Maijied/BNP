@@ -43,6 +43,19 @@ function SuccessContent() {
   return (
     <div className="min-h-screen bg-carbon-900 text-silver-200 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
+        {/* Strategic Partnership Header Pill */}
+        <div className="flex items-center justify-between text-xs text-silver-400 mb-4 px-2">
+          <span className="font-semibold text-white">BNP: Bike Number Plate</span>
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center gap-1 text-[11px] font-mono text-emerald-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              LoraHost Secured
+            </span>
+            <span className="text-carbon-600">•</span>
+            <span className="text-[11px] text-silver-400">Lorapok Labs</span>
+          </div>
+        </div>
+
         {/* Success Header Card */}
         <div className="bg-carbon-850 rounded-2xl border border-carbon-700 p-8 shadow-glass-panel text-center mb-8 relative overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-emerald-500/10 filter blur-3xl pointer-events-none" />
@@ -52,7 +65,7 @@ function SuccessContent() {
           </div>
 
           <span className="text-xs font-mono uppercase tracking-widest text-emerald-400 font-bold">
-            Order Confirmed & Payment Received
+            Payment Verified via LoraHost Gateway
           </span>
           <h1 className="text-2xl sm:text-3xl font-display font-extrabold text-white mt-2 mb-2">
             Thank You for Your Order!

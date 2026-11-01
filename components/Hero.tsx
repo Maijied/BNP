@@ -1,5 +1,5 @@
 import React from "react";
-import { ShieldCheck, Award, ArrowRight, Zap, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, Award, ArrowRight, Zap, CheckCircle2, Sparkles, ExternalLink, Globe } from "lucide-react";
 
 export default function Hero() {
   return (
@@ -12,12 +12,19 @@ export default function Hero() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           {/* Left Column: Copy & Value Proposition */}
           <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left">
-            {/* Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-carbon-800/90 border border-carbon-600/80 text-silver-300 text-xs font-medium mb-6 shadow-sm">
-              <Award className="w-3.5 h-3.5 text-gold" />
-              <span>A Joy & Arash Enterprise Venture</span>
-              <span className="h-1 w-1 rounded-full bg-silver-500" />
-              <span className="text-bnp font-semibold">Finish No. 8</span>
+            {/* Pill Badges */}
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 mb-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-carbon-800/90 border border-carbon-600/80 text-silver-300 text-xs font-medium shadow-sm">
+                <Award className="w-3.5 h-3.5 text-gold" />
+                <span>A Joy & Arash Enterprise Venture</span>
+                <span className="h-1 w-1 rounded-full bg-silver-500" />
+                <span className="text-bnp font-semibold">Finish No. 8</span>
+              </div>
+
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-950/70 border border-emerald-500/30 text-emerald-300 text-xs font-mono font-medium shadow-sm">
+                <Globe className="w-3 h-3 text-emerald-400" />
+                <span>bnp.lorapok.tech</span>
+              </div>
             </div>
 
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-display font-extrabold tracking-tight text-white leading-[1.15] mb-5">
@@ -32,6 +39,57 @@ export default function Hero() {
               Engineered with laser-cut <span className="text-silver-200">0.8 mm mirror-finish stainless steel</span> and 
               BRTA-compliant aluminum standards. Built to outlast Bangladesh weather, dust, and daily commutes.
             </p>
+
+            {/* Strategic Partnership Showcase Card */}
+            <div className="w-full max-w-xl p-4 mb-6 rounded-2xl bg-carbon-850/90 border border-carbon-700/80 shadow-glass-panel backdrop-blur-md text-left">
+              <div className="flex items-center justify-between gap-2 mb-3 pb-2.5 border-b border-carbon-750">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-bnp" />
+                  <span className="text-xs uppercase font-extrabold tracking-wider text-white">
+                    Strategic Technology & Payment Partnership
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-bnp/20 text-bnp-light border border-bnp/30">
+                  OFFICIAL
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Partner 1: Lorapok Labs */}
+                <a
+                  href="https://lorapok.tech"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3 rounded-xl bg-carbon-900/80 hover:bg-carbon-900 border border-carbon-700 hover:border-bnp/50 transition-all group block"
+                >
+                  <div className="flex items-center justify-between text-xs font-bold text-white mb-1">
+                    <span className="group-hover:text-bnp transition-colors">Lorapok Labs</span>
+                    <ExternalLink className="w-3 h-3 text-silver-500 group-hover:text-bnp" />
+                  </div>
+                  <p className="text-[11px] text-silver-400 leading-snug">
+                    Biological UI & Sensory Design Systems. Creator of developer platforms & AI orchestration.
+                  </p>
+                  <span className="text-[10px] text-silver-500 font-mono mt-1.5 block">lorapok.tech ↗</span>
+                </a>
+
+                {/* Partner 2: LoraHost */}
+                <a
+                  href="https://lorahost.lorapok.tech"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3 rounded-xl bg-carbon-900/80 hover:bg-carbon-900 border border-carbon-700 hover:border-emerald-500/50 transition-all group block"
+                >
+                  <div className="flex items-center justify-between text-xs font-bold text-white mb-1">
+                    <span className="group-hover:text-emerald-400 transition-colors">LoraHost Gateway</span>
+                    <ExternalLink className="w-3 h-3 text-silver-500 group-hover:text-emerald-400" />
+                  </div>
+                  <p className="text-[11px] text-silver-400 leading-snug">
+                    Sovereign Cloud & Payment Bridge. Instant automated bKash, Nagad & Card processing via PayStation.
+                  </p>
+                  <span className="text-[10px] text-silver-500 font-mono mt-1.5 block">lorahost.lorapok.tech ↗</span>
+                </a>
+              </div>
+            </div>
 
             {/* Micro Feature Bullets */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full max-w-lg mb-8 text-xs sm:text-sm text-silver-300">
@@ -73,64 +131,70 @@ export default function Hero() {
 
               <a
                 href="#pricing"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-carbon-800 hover:bg-carbon-700 text-silver-200 hover:text-white font-medium px-6 py-3.5 rounded-xl border border-carbon-600 transition-colors text-sm sm:text-base"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-carbon-800 hover:bg-carbon-700 text-silver-200 font-semibold px-6 py-3.5 rounded-xl border border-carbon-600 transition-all text-sm sm:text-base"
               >
-                <Zap className="w-4 h-4 text-gold" />
-                <span>View Retail & B2B Rates</span>
+                <span>View Models & Pricing</span>
               </a>
             </div>
           </div>
 
-          {/* Right Column: Styled CSS 3D Metallic Plate Visual */}
-          <div className="lg:col-span-5 flex flex-col items-center justify-center">
-            <div className="relative w-full max-w-md perspective-1000 group">
-              {/* Specular Background Glow */}
-              <div className="absolute inset-0 bg-gradient-to-r from-bnp/20 to-silver-400/10 rounded-2xl filter blur-xl transform group-hover:scale-105 transition-transform duration-500" />
+          {/* Right Column: Visual Plate Mockup Card */}
+          <div className="lg:col-span-5 flex flex-col items-center">
+            <div className="w-full max-w-md bg-carbon-900/90 rounded-3xl border border-carbon-700/80 p-6 sm:p-8 shadow-glass-panel relative backdrop-blur-xl">
+              {/* Highlight Tag */}
+              <div className="flex items-center justify-between mb-6">
+                <span className="text-xs font-mono font-semibold uppercase tracking-wider text-silver-400 flex items-center gap-1.5">
+                  <Zap className="w-3.5 h-3.5 text-bnp" /> Live Specimen
+                </span>
+                <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                  BRTA 2026 Ready
+                </span>
+              </div>
 
-              {/* Plate Showcase Card */}
-              <div className="relative bg-carbon-850 p-6 rounded-2xl border border-carbon-700/80 shadow-glass-panel">
-                <div className="flex items-center justify-between text-xs text-silver-500 mb-4 font-mono">
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    LIVE METALLIC SPECIMEN
-                  </span>
-                  <span>MODEL A • 285×50 MM</span>
+              {/* Realistic Preview Plate Preview Box */}
+              <div className="w-full aspect-[285/50] max-h-24 rounded-lg bg-gradient-to-b from-silver-100 via-silver-300 to-silver-500 p-[3px] shadow-2xl relative mb-6 overflow-hidden">
+                <div className="w-full h-full rounded-[5px] bg-gradient-to-r from-silver-200 via-silver-100 to-silver-300 flex items-center justify-between px-3 border border-silver-400 relative">
+                  {/* Left Bolt Slot */}
+                  <div className="w-2.5 h-4 rounded-full bg-carbon-900/90 border border-silver-600 shrink-0 shadow-inner" />
+                  
+                  {/* Plate Text */}
+                  <div className="font-bangla font-black text-carbon-950 text-base sm:text-lg tracking-wider text-center drop-shadow-sm select-none">
+                    ঢাকা মেট্রো-ল ১২-৩৪৫৬
+                  </div>
+
+                  {/* Right Bolt Slot */}
+                  <div className="w-2.5 h-4 rounded-full bg-carbon-900/90 border border-silver-600 shrink-0 shadow-inner" />
                 </div>
+              </div>
 
-                {/* 3D Rendered Plate Canvas Container */}
-                <div className="relative aspect-[5.7/1] w-full rounded-md stamped-border bg-gradient-to-r from-slate-200 via-slate-100 to-slate-300 p-2 sm:p-2.5 flex items-center justify-between shadow-plate-emboss overflow-hidden">
-                  {/* Subtle Metallic Chrome Sheen Sweep */}
-                  <div className="absolute inset-0 plate-reflection opacity-60 pointer-events-none" />
-
-                  {/* Left Mounting Slot */}
-                  <div className="w-2 h-4 rounded-full bg-carbon-900/80 border border-black/40 shadow-inner shrink-0" />
-
-                  {/* Embossed BRTA Plate Typography */}
-                  <div className="flex-1 flex items-center justify-center gap-2 font-bangla font-extrabold text-carbon-950 text-base sm:text-xl lg:text-2xl tracking-wider embossed-text select-none">
-                    <span>ঢাকা মেট্রো-ল</span>
-                    <span className="text-carbon-800">•</span>
-                    <span>১২-৩৪৫৬</span>
-                  </div>
-
-                  {/* Right Mounting Slot */}
-                  <div className="w-2 h-4 rounded-full bg-carbon-900/80 border border-black/40 shadow-inner shrink-0" />
+              {/* Quick Spec List */}
+              <div className="space-y-2.5 border-t border-carbon-800 pt-5 text-xs text-silver-400">
+                <div className="flex justify-between">
+                  <span>Material:</span>
+                  <span className="text-white font-medium">0.8mm Stainless Steel</span>
                 </div>
-
-                {/* Spec badges footer */}
-                <div className="mt-5 pt-4 border-t border-carbon-700/60 grid grid-cols-3 gap-2 text-center text-[11px] text-silver-400 font-sans">
-                  <div className="p-2 rounded bg-carbon-800/60 border border-carbon-700/40">
-                    <span className="block text-white font-bold">0.8 mm</span>
-                    <span>Gauge Steel</span>
-                  </div>
-                  <div className="p-2 rounded bg-carbon-800/60 border border-carbon-700/40">
-                    <span className="block text-white font-bold">No. 8 Mirror</span>
-                    <span>Finish Grade</span>
-                  </div>
-                  <div className="p-2 rounded bg-carbon-800/60 border border-carbon-700/40">
-                    <span className="block text-white font-bold">100% Legal</span>
-                    <span>BRTA Standard</span>
-                  </div>
+                <div className="flex justify-between">
+                  <span>Finish:</span>
+                  <span className="text-white font-medium">Finish No. 8 Mirror Silver</span>
                 </div>
+                <div className="flex justify-between">
+                  <span>Standard Model A:</span>
+                  <span className="text-white font-mono">285 × 50 mm (Motorcycle)</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Standard Model B:</span>
+                  <span className="text-white font-mono">200 × 100 mm (Scooter)</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Payment Gateway:</span>
+                  <span className="text-emerald-400 font-semibold">LoraHost (bKash/Nagad/Cards)</span>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-carbon-800/80 text-center">
+                <p className="text-[11px] text-silver-500 font-sans">
+                  Laser precision cutting with exact BRTA slot distances.
+                </p>
               </div>
             </div>
           </div>

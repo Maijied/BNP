@@ -10,10 +10,12 @@ import {
   Truck,
   Lock,
   CreditCard,
-  Smartphone,
   CheckCircle,
   ArrowRight,
   Loader2,
+  Sparkles,
+  ShieldCheck,
+  Zap,
 } from "lucide-react";
 
 const BD_DISTRICTS = [
@@ -47,11 +49,12 @@ export default function OrderForm() {
   const [shopName, setShopName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("lorahost_bridge");
-  const [trxId, setTrxId] = useState("");
   const [agreedToWhatsApp, setAgreedToWhatsApp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+
+  // Sole Payment Method: LoraHost Payment Gateway
+  const paymentMethod: PaymentMethod = "lorahost_bridge";
 
   // Dynamic calculations
   const unitPrice = model === "A" ? 380 : 450;
@@ -65,17 +68,12 @@ export default function OrderForm() {
     setErrorMsg("");
 
     if (!agreedToWhatsApp) {
-      setErrorMsg("Please acknowledge the WhatsApp registration verification requirement.");
+      setErrorMsg("Please confirm that you will send your vehicle bluebook photo via WhatsApp (01914-873925).");
       return;
     }
 
     if (!/^01[3-9]\d{8}$/.test(phone.trim())) {
       setErrorMsg("Please enter a valid 11-digit Bangladesh mobile number (e.g. 017XXXXXXXX).");
-      return;
-    }
-
-    if (paymentMethod !== "lorahost_bridge" && !trxId.trim()) {
-      setErrorMsg("Please enter the bKash / Nagad Transaction ID for manual verification.");
       return;
     }
 
@@ -96,22 +94,20 @@ export default function OrderForm() {
           quantity,
           bracket,
           payment_method: paymentMethod,
-          trx_id: paymentMethod !== "lorahost_bridge" ? trxId.trim() : undefined,
         }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to process order. Please try again.");
+        throw new Error(data.error || "Order submission failed. Please try again.");
       }
 
-      if (data.checkout_url) {
-        // Redirect to LoraHost Payment Bridge
-        window.location.href = data.checkout_url;
+      // Seamless redirect to LoraHost Checkout Gateway
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
       } else {
-        // Manual verification success
-        window.location.href = `/payment/success?order_number=${data.order_number}&method=${paymentMethod}`;
+        window.location.href = `/payment/success?orderNumber=${encodeURIComponent(data.orderNumber)}`;
       }
     } catch (err: any) {
       setErrorMsg(err.message || "An unexpected error occurred. Please contact our hotline.");
@@ -123,163 +119,162 @@ export default function OrderForm() {
     <section id="order" className="py-16 sm:py-24 bg-carbon-900 border-b border-carbon-700/60 relative">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <span className="text-xs font-bold uppercase tracking-wider text-bnp bg-bnp/10 px-3 py-1 rounded-full border border-bnp/20">
-            Step-by-Step Checkout
-          </span>
-          <h2 className="text-2xl sm:text-4xl font-display font-extrabold text-white tracking-tight mt-3">
-            Place Your Plate Order
+          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-bnp bg-bnp/10 px-3 py-1 rounded-full border border-bnp/20 mb-3">
+            <Lock className="w-3.5 h-3.5 text-bnp" />
+            <span>Secure Direct Order Intake</span>
+          </div>
+          <h2 className="text-2xl sm:text-4xl font-display font-extrabold text-white tracking-tight">
+            Order Your Custom Plate
           </h2>
-          <p className="mt-2 text-silver-400 text-xs sm:text-sm font-sans">
-            Pathao nationwide courier delivery. Full advance payment via LoraHost or manual bKash/Nagad.
+          <p className="mt-2 text-silver-400 text-xs sm:text-sm font-sans max-w-xl mx-auto">
+            Laser-cut 0.8 mm mirror-silver stainless steel plate stamped with your exact BRTA registration. Powered exclusively by the <strong>LoraHost Payment Gateway</strong>.
           </p>
         </div>
 
-        {/* WhatsApp Registration Notice (Mandatory Requirement) */}
-        <div className="bg-gradient-to-r from-red-950/60 via-carbon-850 to-red-950/60 border-2 border-bnp/50 rounded-2xl p-5 mb-8 shadow-glass-panel">
-          <div className="flex items-start gap-3.5">
-            <AlertCircle className="w-5 h-5 text-bnp shrink-0 mt-0.5" />
-            <div>
-              <h4 className="text-sm font-bold text-white flex items-center gap-2">
-                Mandatory Verification Requirement
-                <span className="text-[10px] bg-bnp text-white px-2 py-0.5 rounded uppercase font-semibold">
-                  Required
-                </span>
-              </h4>
-              <p className="text-xs text-silver-300 mt-1 font-sans leading-relaxed">
-                To guarantee 100% legal BRTA compliance, customers <strong>must send a clear photo of the motorcycle registration certificate / blue book via WhatsApp to 01914-873925</strong> after submitting this order.
-                Plates are stamped strictly matching the official registration record.
-              </p>
-            </div>
-          </div>
-        </div>
-
         {errorMsg && (
-          <div className="bg-red-900/40 border border-red-500 text-red-200 text-xs p-4 rounded-xl mb-6">
-            {errorMsg}
+          <div className="mb-8 p-4 rounded-xl bg-red-950/80 border border-red-500/50 flex items-start gap-3 text-red-200 text-xs sm:text-sm">
+            <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <strong className="block font-semibold">Order Error:</strong>
+              <span>{errorMsg}</span>
+            </div>
           </div>
         )}
 
-        {/* Order Form Card */}
-        <form onSubmit={handleSubmit} className="bg-carbon-850 rounded-2xl border border-carbon-700 p-6 sm:p-8 shadow-glass-panel">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-            {/* Customer Name */}
-            <div>
-              <label className="block text-xs font-semibold text-silver-300 mb-2">
-                Full Name *
-              </label>
-              <input
-                type="text"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Joy Hasan"
-                className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-3 text-sm text-white placeholder-silver-600 focus:outline-none focus:border-bnp transition-colors"
-              />
-            </div>
+        <form onSubmit={handleSubmit} className="bg-carbon-850 rounded-3xl border border-carbon-700/80 p-6 sm:p-10 shadow-glass-panel">
+          {/* Step 1: Customer & Delivery Details */}
+          <div className="mb-8">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-silver-300 mb-4 flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-bnp text-white flex items-center justify-center text-xs">1</span>
+              Customer & Delivery Details
+            </h3>
 
-            {/* Shop Name */}
-            <div>
-              <label className="block text-xs font-semibold text-silver-300 mb-2">
-                Shop / Garage Name (Optional)
-              </label>
-              <input
-                type="text"
-                value={shopName}
-                onChange={(e) => setShopName(e.target.value)}
-                placeholder="e.g. Joy & Arash Motors"
-                className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-3 text-sm text-white placeholder-silver-600 focus:outline-none focus:border-bnp transition-colors"
-              />
-            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-silver-300 mb-2">
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="e.g. Joy Hasan"
+                  className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-3 text-sm text-white placeholder-silver-600 focus:outline-none focus:border-bnp transition-colors"
+                />
+              </div>
 
-            {/* Mobile Phone */}
-            <div>
-              <label className="block text-xs font-semibold text-silver-300 mb-2">
-                Mobile Number (bKash/WhatsApp) *
-              </label>
-              <input
-                type="tel"
-                required
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="01XXXXXXXXX"
-                pattern="^01[3-9]\d{8}$"
-                className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-3 text-sm text-white placeholder-silver-600 focus:outline-none focus:border-bnp transition-colors font-mono"
-              />
-            </div>
+              <div>
+                <label className="block text-xs font-semibold text-silver-300 mb-2">
+                  Shop Name (Optional for Dealers)
+                </label>
+                <input
+                  type="text"
+                  value={shopName}
+                  onChange={(e) => setShopName(e.target.value)}
+                  placeholder="e.g. Arash Motors & Accessories"
+                  className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-3 text-sm text-white placeholder-silver-600 focus:outline-none focus:border-bnp transition-colors"
+                />
+              </div>
 
-            {/* District */}
-            <div>
-              <label className="block text-xs font-semibold text-silver-300 mb-2">
-                Delivery District *
-              </label>
-              <select
-                value={district}
-                onChange={(e) => setDistrict(e.target.value)}
-                className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-bnp transition-colors"
+              <div>
+                <label className="block text-xs font-semibold text-silver-300 mb-2">
+                  Mobile Phone Number (bKash Account / Contact) *
+                </label>
+                <input
+                  type="tel"
+                  required
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="01XXXXXXXXX (11 digits)"
+                  className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-3 text-sm text-white font-mono placeholder-silver-600 focus:outline-none focus:border-bnp transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-silver-300 mb-2">
+                  Delivery District (Pathao Nationwide Courier) *
+                </label>
+                <select
+                  value={district}
+                  onChange={(e) => setDistrict(e.target.value)}
+                  className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-bnp transition-colors"
+                >
+                  {BD_DISTRICTS.map((d) => (
+                    <option key={d} value={d} className="bg-carbon-900 text-white">
+                      {d} {d === "Dhaka" ? "(৳ 60 Inside Dhaka)" : "(৳ 120 Outside Dhaka)"}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="block text-xs font-semibold text-silver-300 mb-2">
+                  Detailed Delivery Address (Thana, Road, House No.) *
+                </label>
+                <textarea
+                  required
+                  rows={2}
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="e.g. House 52, Road 4, Purana Paltan Line, Paltan, Dhaka"
+                  className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-3 text-sm text-white placeholder-silver-600 focus:outline-none focus:border-bnp transition-colors resize-none"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Step 2: Plate Configuration */}
+          <div className="mb-8 border-t border-carbon-700/80 pt-6">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-silver-300 mb-4 flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-bnp text-white flex items-center justify-center text-xs">2</span>
+              Plate Model & Custom Stamping
+            </h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              {/* Model Choice Buttons */}
+              <div
+                onClick={() => setModel("A")}
+                className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                  model === "A"
+                    ? "bg-bnp/10 border-bnp text-white shadow-bnp-glow/20"
+                    : "bg-carbon-800 border-carbon-700 text-silver-400 hover:border-carbon-600"
+                }`}
               >
-                {BD_DISTRICTS.map((d) => (
-                  <option key={d} value={d}>
-                    {d} ({d === "Dhaka" ? "৳ 60 Pathao" : "৳ 120 Nationwide"})
-                  </option>
-                ))}
-              </select>
-            </div>
+                <div className="flex justify-between items-center mb-1">
+                  <span className="font-bold text-sm text-white">Model A • Motorcycle</span>
+                  <span className="text-xs font-mono text-emerald-400">৳ 380</span>
+                </div>
+                <span className="text-[11px] text-silver-400 block">285 × 50 mm single-line standard format</span>
+              </div>
 
-            {/* Full Street Address */}
-            <div className="sm:col-span-2">
-              <label className="block text-xs font-semibold text-silver-300 mb-2">
-                Detailed Delivery Address (Thana, Road, House) *
-              </label>
-              <textarea
-                required
-                rows={2}
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder="House #, Road #, Area, Thana, District"
-                className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-silver-600 focus:outline-none focus:border-bnp transition-colors"
-              />
-            </div>
-
-            {/* Plate Model & Quantity */}
-            <div>
-              <label className="block text-xs font-semibold text-silver-300 mb-2">
-                Plate Model *
-              </label>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setModel("A")}
-                  className={`py-2.5 px-3 rounded-xl text-xs font-semibold border transition-all ${
-                    model === "A"
-                      ? "bg-bnp/20 border-bnp text-white"
-                      : "bg-carbon-800 border-carbon-700 text-silver-400"
-                  }`}
-                >
-                  Model A (৳ 380)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setModel("B")}
-                  className={`py-2.5 px-3 rounded-xl text-xs font-semibold border transition-all ${
-                    model === "B"
-                      ? "bg-bnp/20 border-bnp text-white"
-                      : "bg-carbon-800 border-carbon-700 text-silver-400"
-                  }`}
-                >
-                  Model B (৳ 450)
-                </button>
+              <div
+                onClick={() => setModel("B")}
+                className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                  model === "B"
+                    ? "bg-bnp/10 border-bnp text-white shadow-bnp-glow/20"
+                    : "bg-carbon-800 border-carbon-700 text-silver-400 hover:border-carbon-600"
+                }`}
+              >
+                <div className="flex justify-between items-center mb-1">
+                  <span className="font-bold text-sm text-white">Model B • Scooter</span>
+                  <span className="text-xs font-mono text-emerald-400">৳ 450</span>
+                </div>
+                <span className="text-[11px] text-silver-400 block">200 × 100 mm stacked two-line format</span>
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-silver-300 mb-2">
-                Quantity
-              </label>
+            {/* Quantity Selector */}
+            <div className="flex items-center justify-between p-4 bg-carbon-800 rounded-xl border border-carbon-700 mb-4">
+              <div>
+                <span className="text-xs font-semibold text-white block">Quantity (Pieces)</span>
+                <span className="text-[11px] text-silver-400">Dealers: orders above 50 pcs qualify for wholesale discount</span>
+              </div>
               <div className="flex items-center gap-3">
                 <button
                   type="button"
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-10 h-10 rounded-xl bg-carbon-800 border border-carbon-700 text-white font-bold hover:bg-carbon-700 transition-colors"
+                  className="w-10 h-10 rounded-xl bg-carbon-700 border border-carbon-600 text-white font-bold hover:bg-carbon-600 transition-colors"
                 >
                   -
                 </button>
@@ -289,7 +284,7 @@ export default function OrderForm() {
                 <button
                   type="button"
                   onClick={() => setQuantity(quantity + 1)}
-                  className="w-10 h-10 rounded-xl bg-carbon-800 border border-carbon-700 text-white font-bold hover:bg-carbon-700 transition-colors"
+                  className="w-10 h-10 rounded-xl bg-carbon-700 border border-carbon-600 text-white font-bold hover:bg-carbon-600 transition-colors"
                 >
                   +
                 </button>
@@ -297,7 +292,7 @@ export default function OrderForm() {
             </div>
 
             {/* Plate Number */}
-            <div className="sm:col-span-2">
+            <div className="mb-4">
               <label className="block text-xs font-semibold text-silver-300 mb-2">
                 Registration Number (Exact Match to Bluebook) *
               </label>
@@ -315,7 +310,7 @@ export default function OrderForm() {
             </div>
 
             {/* Clamp Bracket Addon */}
-            <div className="sm:col-span-2">
+            <div>
               <label className="flex items-center gap-3 p-3.5 bg-carbon-800 rounded-xl border border-carbon-700 cursor-pointer hover:border-carbon-600 transition-colors">
                 <input
                   type="checkbox"
@@ -335,58 +330,68 @@ export default function OrderForm() {
             </div>
           </div>
 
-          {/* Payment Method Selection */}
+          {/* Step 3: Exclusive LoraHost Payment Gateway */}
           <div className="mb-8 border-t border-carbon-700/80 pt-6">
-            <label className="block text-xs font-semibold text-silver-300 mb-3">
-              Select Advance Payment Channel *
-            </label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-              <label
-                onClick={() => setPaymentMethod("lorahost_bridge")}
-                className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all ${
-                  paymentMethod === "lorahost_bridge"
-                    ? "bg-bnp/10 border-bnp text-white"
-                    : "bg-carbon-800 border-carbon-700 text-silver-400"
-                }`}
-              >
-                <CreditCard className="w-5 h-5 text-bnp" />
-                <div className="text-xs">
-                  <span className="font-bold text-white block">Instant Online Payment</span>
-                  <span className="text-[11px] text-silver-400">bKash, Nagad, Visa, Mastercard</span>
-                </div>
-              </label>
+            <h3 className="text-sm font-bold uppercase tracking-wider text-silver-300 mb-3 flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-bnp text-white flex items-center justify-center text-xs">3</span>
+              Exclusive Payment Gateway
+            </h3>
 
-              <label
-                onClick={() => setPaymentMethod("manual_bkash")}
-                className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all ${
-                  paymentMethod !== "lorahost_bridge"
-                    ? "bg-bnp/10 border-bnp text-white"
-                    : "bg-carbon-800 border-carbon-700 text-silver-400"
-                }`}
-              >
-                <Smartphone className="w-5 h-5 text-yellow-400" />
-                <div className="text-xs">
-                  <span className="font-bold text-white block">Manual Send Money</span>
-                  <span className="text-[11px] text-silver-400">Send Money to 01632333221</span>
+            {/* LoraHost Gateway Highlight Card */}
+            <div className="p-5 rounded-2xl bg-gradient-to-br from-carbon-800 via-carbon-850 to-carbon-800 border-2 border-bnp/60 shadow-bnp-glow/10 relative overflow-hidden">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-carbon-700">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-bnp/20 border border-bnp/40 flex items-center justify-center text-bnp shrink-0">
+                    <ShieldCheck className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-extrabold text-white flex items-center gap-2">
+                      LoraHost Instant Payment Gateway
+                      <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-500/30">
+                        OFFICIAL
+                      </span>
+                    </h4>
+                    <p className="text-xs text-silver-400">
+                      Automated PayStation relay hosted on LoraHost sovereign cloud infrastructure.
+                    </p>
+                  </div>
                 </div>
-              </label>
-            </div>
 
-            {paymentMethod !== "lorahost_bridge" && (
-              <div className="p-4 rounded-xl bg-carbon-800 border border-carbon-700 mb-4">
-                <p className="text-xs text-silver-300 mb-2">
-                  Please Send Money <strong className="text-white">৳ {grandTotal} BDT</strong> to our official personal wallet: <strong className="text-yellow-400 font-mono">01632333221</strong> (bKash/Nagad), then enter your TrxID below:
-                </p>
-                <input
-                  type="text"
-                  required
-                  value={trxId}
-                  onChange={(e) => setTrxId(e.target.value)}
-                  placeholder="e.g. BL9A8X7K2M"
-                  className="w-full bg-carbon-900 border border-carbon-700 rounded-lg px-3 py-2 text-sm text-white font-mono uppercase focus:outline-none focus:border-bnp"
-                />
+                <a
+                  href="https://lorahost.lorapok.tech"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[11px] text-emerald-400 font-mono hover:underline shrink-0"
+                >
+                  lorahost.lorapok.tech ↗
+                </a>
               </div>
-            )}
+
+              {/* Supported Payment Channels */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
+                <div className="p-2 rounded-lg bg-carbon-900 border border-carbon-700/80 text-center">
+                  <span className="text-xs font-bold text-pink-400 block font-sans">bKash</span>
+                  <span className="text-[10px] text-silver-500">Instant Check</span>
+                </div>
+                <div className="p-2 rounded-lg bg-carbon-900 border border-carbon-700/80 text-center">
+                  <span className="text-xs font-bold text-orange-400 block font-sans">Nagad</span>
+                  <span className="text-[10px] text-silver-500">Direct Gateway</span>
+                </div>
+                <div className="p-2 rounded-lg bg-carbon-900 border border-carbon-700/80 text-center">
+                  <span className="text-xs font-bold text-purple-400 block font-sans">Rocket / Upay</span>
+                  <span className="text-[10px] text-silver-500">MFS Integrated</span>
+                </div>
+                <div className="p-2 rounded-lg bg-carbon-900 border border-carbon-700/80 text-center">
+                  <span className="text-xs font-bold text-blue-400 block font-sans">Visa / MC</span>
+                  <span className="text-[10px] text-silver-500">Debit / Credit</span>
+                </div>
+              </div>
+
+              <div className="text-[11px] text-silver-400 flex items-center gap-1.5 font-sans">
+                <CheckCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <span>Zero manual review delay. Orders confirm instantaneously and queue directly for laser cutting.</span>
+              </div>
+            </div>
           </div>
 
           {/* Pricing Breakdown Card */}
@@ -427,31 +432,25 @@ export default function OrderForm() {
             </label>
           </div>
 
-          {/* Advance Policy & Submit Button */}
-          <div className="flex flex-col gap-3">
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-bnp to-bnp-hover hover:from-bnp-hover hover:to-bnp text-white font-bold py-4 rounded-xl shadow-bnp-glow transition-all text-base disabled:opacity-50"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  <span>Processing Order...</span>
-                </>
-              ) : (
-                <>
-                  <Lock className="w-4 h-4" />
-                  <span>
-                    {paymentMethod === "lorahost_bridge" ? "Pay via LoraHost Bridge" : "Submit Order (Manual TrxID)"} (৳ {grandTotal} BDT)
-                  </span>
-                </>
-              )}
-            </button>
-            <p className="text-center text-[11px] text-silver-500 font-sans">
-              🔒 100% Secure Checkout • Full advance only • Zero COD • Joy & Arash Enterprise
-            </p>
-          </div>
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full inline-flex items-center justify-center gap-3 bg-gradient-to-r from-bnp to-bnp-hover hover:from-bnp-hover hover:to-bnp text-white font-bold py-4 px-8 rounded-2xl shadow-bnp-glow hover:shadow-xl transition-all duration-200 border border-red-400/40 text-base active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed group"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>Redirecting to LoraHost Gateway...</span>
+              </>
+            ) : (
+              <>
+                <CreditCard className="w-5 h-5" />
+                <span>Pay ৳ {grandTotal} BDT via LoraHost Payment Gateway</span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </>
+            )}
+          </button>
         </form>
       </div>
     </section>

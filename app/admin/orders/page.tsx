@@ -85,7 +85,7 @@ export default function AdminOrdersPage() {
           </div>
           <div>
             <h1 className="text-sm font-bold text-white font-display">BNP Admin Dashboard</h1>
-            <span className="text-[10px] text-silver-500 font-sans">Joy & Arash Enterprise • Operations</span>
+            <span className="text-[10px] text-silver-500 font-sans">Joy & Arash Enterprise • In Strategic Partnership with Lorapok Labs & LoraHost</span>
           </div>
         </div>
 
