@@ -14,9 +14,9 @@
   "checkpoint_transcript_start": 415,
   "transcript_lines_at_start": 415,
   "redaction": {
-    "replacements": 40,
+    "replacements": 41,
     "layers": {
-      "betterleaks": 5,
+      "betterleaks": 6,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 11,
