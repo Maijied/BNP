@@ -24,10 +24,10 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://bnp.shop"),
-  title: "BNP — Bike Number Plate | Premium Mirror Silver Steel Plates",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://bnp.lorapok.tech"),
+  title: "BNP: Bike Number Plate — Mirror Silver Steel Plates | Lorapok Labs & LoraHost",
   description:
-    "Order luxury laser-cut 0.8 mm Finish No. 8 mirror-silver stainless steel and BRTA-compliant aluminum motorcycle and scooter plates in Bangladesh. A Joy & Arash Enterprise Venture.",
+    "Order luxury laser-cut 0.8 mm Finish No. 8 mirror-silver stainless steel and BRTA-compliant aluminum motorcycle and scooter plates in Bangladesh. A Joy & Arash Enterprise Venture in strategic partnership with Lorapok Labs and LoraHost. Live at bnp.lorapok.tech.",
   keywords: [
     "Bike Number Plate",
     "BNP",
@@ -36,13 +36,18 @@ export const metadata: Metadata = {
     "Mirror Silver Steel Plate",
     "BRTA Compliant Number Plate",
     "Joy & Arash Enterprise",
+    "Lorapok Labs",
+    "LoraHost",
+    "bnp.lorapok.tech",
   ],
-  authors: [{ name: "Joy & Arash Enterprise" }],
+  authors: [{ name: "Joy & Arash Enterprise" }, { name: "Lorapok Labs" }, { name: "LoraHost" }],
+  creator: "Lorapok Labs & Joy & Arash Enterprise",
+  publisher: "Lorapok Labs",
   openGraph: {
-    title: "BNP — Bike Number Plate | Premium Mirror Silver Steel Plates",
+    title: "BNP: Bike Number Plate — Mirror Silver Steel Plates | Lorapok Labs & LoraHost",
     description:
-      "Laser-cut 0.8 mm Finish No. 8 mirror silver steel plates. Built to outlast your ride. BRTA compliance deadline Nov 15.",
-    url: "https://bnp.shop",
+      "Laser-cut 0.8 mm Finish No. 8 mirror silver steel plates. Built to outlast your ride. BRTA compliance deadline Nov 15. Powered exclusively by LoraHost Payment Gateway.",
+    url: "https://bnp.lorapok.tech",
     siteName: "BNP: Bike Number Plate",
     locale: "bn_BD",
     type: "website",
@@ -50,7 +55,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "BNP — Bike Number Plate",
-    description: "Premium Quality | Durable | Stylish. A Joy & Arash Enterprise Venture.",
+    description: "Premium Quality | Durable | Stylish. A Joy & Arash Enterprise Venture in Strategic Partnership with Lorapok Labs & LoraHost.",
   },
 };
 

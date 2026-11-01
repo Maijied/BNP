@@ -1,9 +1,15 @@
 # BNP: Bike Number Plate — Production Deployment & Operations Runbook
 
 **A Joy & Arash Enterprise Venture**  
+**Strategic Technology & Infrastructure Partnership**:  
+- **Lorapok Labs**: Central collective portal & Biological UI systems ([lorapok.tech](https://lorapok.tech))  
+- **LoraHost**: Sovereign cloud infrastructure & automated PayStation PGW relay ([lorahost.lorapok.tech](https://lorahost.lorapok.tech))  
+- **Entire Forge**: Multi-agent session tracking, checkpoints & eval trails ([entire.com](https://entire.com))  
+
+**Live Production & Sandbox Domain**: `https://bnp.lorapok.tech` (also accessible via `https://bnp.shop`)  
 **Products**: Laser-cut 0.8 mm Finish No. 8 mirror-silver steel and BRTA-compliant aluminum motorcycle and scooter plates in Bangladesh.  
 **Official Channels**:  
-- Hotline & bKash Send Money: `01632333221`  
+- Hotline: `01632333221`  
 - WhatsApp Registration Certificate Intake: `01914-873925`  
 - Official Email: `bikesnumberplate@gmail.com`  
 - Physical Workshop / Office: `52 Purana Paltan Line, Paltan, Dhaka`  
@@ -206,3 +212,22 @@ For customers who pay manually via bKash Personal Send Money to `01632333221`:
 
 ### SOP 3: 409 Duplicate Invoice Resolution
 If a customer attempts payment, aborts, and immediately tries again, the system automatically appends a retry nonce (e.g. `BNP-261101-1234-R1`) so PayStation never rejects the session with HTTP 409 Conflict. No manual intervention is required.
+
+---
+
+## 8. Entire CLI & Entire Trails Workflow
+
+The BNP repository integrates with **Entire** (`https://entire.com`) for tracking agent sessions, intent, checkpoints, and eval gates:
+
+- **Entire Status**: Check active agent sessions and outgoing checkpoints:
+  ```bash
+  entire status
+  ```
+- **Entire Trails**: Manage intent and eval-driven PR reviews:
+  ```bash
+  entire trail create --title "Feature Name" --no-branch --body "Description" --type feature --priority high
+  entire trail link <trail-id> --branch <branch-name>
+  entire trail show <trail-id>
+  ```
+- **Loragent Entire Specialist**: Automated orchestration agent available in Loragent:
+  - Invoked via `loragent-entire-specialist` for managing trails, verifying eval scores (Risk, Intent Drift, Slop), and reviewing session checkpoints.

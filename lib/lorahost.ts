@@ -27,7 +27,7 @@ export async function createBridgeSession(
   retryCount = 0
 ): Promise<LoraBridgeSessionResponse> {
   const token = process.env.LORA_BRIDGE_CLIENT_TOKEN;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bnp.shop";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bnp.lorapok.tech";
   const returnUrl = `${siteUrl.replace(/\/$/, "")}/payment/return`;
 
   // Fallback simulation for local development without active token

@@ -85,7 +85,7 @@ export default function AdminSettingsPage() {
           </a>
           <div>
             <h1 className="text-sm font-bold text-white font-display">Store Settings Configurator</h1>
-            <span className="text-[10px] text-silver-500 font-sans">Dynamic Pricing & Banner Controls</span>
+            <span className="text-[10px] text-silver-500 font-sans">Dynamic Pricing & Controls • Powered by Lorapok Labs & LoraHost</span>
           </div>
         </div>
 

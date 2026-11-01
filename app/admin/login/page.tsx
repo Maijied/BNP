@@ -55,7 +55,7 @@ function LoginContent() {
             Operations & Admin Portal
           </h1>
           <p className="text-xs text-silver-400 mt-1 font-sans">
-            A Joy & Arash Enterprise Venture
+            A Joy & Arash Enterprise Venture • Powered by Lorapok Labs & LoraHost
           </p>
         </div>
 
