@@ -1,7 +1,20 @@
+"use client";
+
 import React from "react";
 import { Check, Sparkles, MessageCircle, ArrowRight } from "lucide-react";
+import { useStorefront } from "@/components/StorefrontContext";
 
 export default function Pricing() {
+  const { setModel } = useStorefront();
+
+  const handleSelectModel = (m: "A" | "B") => {
+    setModel(m);
+    const element = document.getElementById("order");
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section id="pricing" className="py-16 sm:py-24 bg-carbon-950 border-b border-carbon-700/60 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -61,13 +74,14 @@ export default function Pricing() {
               </ul>
             </div>
 
-            <a
-              href="#order"
+            <button
+              type="button"
+              onClick={() => handleSelectModel("A")}
               className="w-full inline-flex items-center justify-center gap-2 bg-carbon-800 hover:bg-carbon-700 text-white font-semibold py-3 rounded-xl border border-carbon-600 transition-colors text-sm"
             >
               <span>Select Model A</span>
               <ArrowRight className="w-4 h-4" />
-            </a>
+            </button>
           </div>
 
           {/* Model B Card */}
@@ -116,13 +130,14 @@ export default function Pricing() {
               </ul>
             </div>
 
-            <a
-              href="#order"
+            <button
+              type="button"
+              onClick={() => handleSelectModel("B")}
               className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-bnp to-bnp-hover hover:from-bnp-hover hover:to-bnp text-white font-semibold py-3 rounded-xl shadow-bnp-glow transition-all text-sm"
             >
               <span>Select Model B</span>
               <ArrowRight className="w-4 h-4" />
-            </a>
+            </button>
           </div>
         </div>
 

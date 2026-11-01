@@ -8,42 +8,45 @@ import PaymentSection from "@/components/PaymentSection";
 import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
+import { StorefrontProvider } from "@/components/StorefrontContext";
 
 export default function Home() {
   return (
-    <main className="min-h-screen flex flex-col bg-carbon-900 text-silver-200">
-      {/* 1. Urgency Banner */}
-      <UrgencyBar
-        urgencyText="BRTA deadline: November 15 — order your compliant plate today"
-        hotline="01632333221"
-      />
+    <StorefrontProvider>
+      <main className="min-h-screen flex flex-col bg-carbon-900 text-silver-200">
+        {/* 1. Urgency Banner */}
+        <UrgencyBar
+          urgencyText="BRTA deadline: November 15 — order your compliant plate today"
+          hotline="01632333221"
+        />
 
-      {/* 2. Sticky Navbar */}
-      <Navbar hotline="01632333221" />
+        {/* 2. Sticky Navbar */}
+        <Navbar hotline="01632333221" />
 
-      {/* 3. Hero Section */}
-      <Hero />
+        {/* 3. Hero Section */}
+        <Hero />
 
-      {/* 4. Centerpiece: Plate Designer */}
-      <PlateDesigner />
+        {/* 4. Centerpiece: Plate Designer */}
+        <PlateDesigner />
 
-      {/* 5. Pricing & Wholesale Matrix */}
-      <Pricing />
+        {/* 5. Pricing & Wholesale Matrix */}
+        <Pricing />
 
-      {/* 6. Order Intake Form */}
-      <OrderForm />
+        {/* 6. Order Intake Form */}
+        <OrderForm />
 
-      {/* 7. Payment Options */}
-      <PaymentSection />
+        {/* 7. Payment Options */}
+        <PaymentSection />
 
-      {/* 8. FAQ Section */}
-      <FAQ />
+        {/* 8. FAQ Section */}
+        <FAQ />
 
-      {/* 9. Comprehensive Footer */}
-      <Footer />
+        {/* 9. Comprehensive Footer */}
+        <Footer />
 
-      {/* 10. Persistent WhatsApp Floating Trigger */}
-      <WhatsAppFloat />
-    </main>
+        {/* 10. Persistent WhatsApp Floating Trigger */}
+        <WhatsAppFloat />
+      </main>
+    </StorefrontProvider>
   );
 }

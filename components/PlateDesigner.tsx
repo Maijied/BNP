@@ -10,6 +10,7 @@ import {
   DISTRICT_MAP,
   CLASS_LETTER_MAP,
 } from "@/lib/bengali";
+import { useStorefront } from "@/components/StorefrontContext";
 import {
   Sparkles,
   Sliders,
@@ -38,7 +39,7 @@ const COMMON_METROS = [
 const COMMON_CLASSES = ["ল", "হ", "গ", "খ", "ঘ", "চ", "জ", "ট", "ড", "ক", "ব"];
 
 export default function PlateDesigner() {
-  const [model, setModel] = useState<"A" | "B">("A");
+  const { model, setModel, setPlateText } = useStorefront();
   const [smartInput, setSmartInput] = useState("Dhaka Metro LA 12 3456");
 
   // Granular plate fields
@@ -73,6 +74,11 @@ export default function PlateDesigner() {
   const displayModelA = `${district}-${classLetter} ${part1}-${part2}`;
   const displayModelB_Line1 = district;
   const displayModelB_Line2 = `${classLetter}-${part1}-${part2}`;
+
+  useEffect(() => {
+    const canonicalText = model === "A" ? displayModelA : `${displayModelB_Line1} ${displayModelB_Line2}`;
+    setPlateText(canonicalText);
+  }, [model, displayModelA, displayModelB_Line1, displayModelB_Line2, setPlateText]);
 
   const copyToClipboard = () => {
     const textToCopy = model === "A" ? displayModelA : `${displayModelB_Line1}\n${displayModelB_Line2}`;
@@ -242,7 +248,7 @@ export default function PlateDesigner() {
                 href="#order"
                 className="flex-1 inline-flex items-center justify-center gap-1.5 bg-bnp hover:bg-bnp-hover text-white px-3 py-2.5 rounded-xl text-xs font-semibold shadow-bnp-glow transition-all"
               >
-                <span>Use in Order</span>
+                <span>Use in Order Form</span>
                 <ArrowDown className="w-3.5 h-3.5" />
               </a>
             </div>
