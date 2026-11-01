@@ -10,7 +10,7 @@
     "lint": "next lint",
     "db:migrate": "node scripts/migrate.mjs",
     "seed:admin": "node scripts/seed-admin.mjs",
-    "test:bengali": "node scripts/test-bengali.mjs"
+    "test:bengali": "node --experimental-strip-types scripts/test-bengali.mjs"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
