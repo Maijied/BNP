@@ -1,139 +1,80 @@
-// Cloudflare Pages Function: /api/order
+import { createPendingOrder, OrderValidationError } from "../_lib/orders.js";
+
+const json = (body, status) => new Response(JSON.stringify(body), {
+  status, headers: { "Content-Type": "application/json", "Cache-Control": "no-store" }
+});
+
+// Cloudflare Pages: POST /api/order
+// Staging-first: requires D1 and LoraHost Bridge credentials; never simulates payment.
 export async function onRequestPost({ request, env }) {
-  try {
-    const body = await request.json().catch(() => ({}));
-
-    const name = (body.name || "").trim();
-    const phone = (body.phone || "").trim();
-    const district = (body.district || "").trim();
-    const address = (body.address || "").trim();
-    const model = body.model === "B" ? "B" : "A";
-    const regBangla = (body.reg_number_bangla || "").trim();
-    const quantity = Math.max(1, Math.min(100, Math.floor(Number(body.quantity) || 1)));
-    const bracket = Boolean(body.bracket);
-    const paymentMethod = body.payment_method || "lorahost_bridge";
-
-    if (!name || name.length < 2) {
-      return new Response(JSON.stringify({ error: "Please enter your full name." }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    if (!/^01[3-9]\d{8}$/.test(phone)) {
-      return new Response(
-        JSON.stringify({ error: "Please enter a valid 11-digit Bangladesh phone number (e.g. 01712345678)." }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
-    }
-
-    if (!district) {
-      return new Response(JSON.stringify({ error: "Please select your delivery district." }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    if (!address || address.length < 5) {
-      return new Response(JSON.stringify({ error: "Please enter your full delivery address." }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    if (!regBangla) {
-      return new Response(JSON.stringify({ error: "Registration number cannot be empty." }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    // Server-side calculation
-    const unitPrice = model === "A" ? 380 : 450;
-    const plateTotal = unitPrice * quantity;
-    const bracketTotal = bracket ? 80 * quantity : 0;
-    const isDhaka = district.toLowerCase() === "dhaka";
-    const deliveryCharge = isDhaka ? 60 : 120;
-    const total = plateTotal + bracketTotal + deliveryCharge;
-
-    const datePrefix = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
-    const orderNumber = `BNP-${datePrefix}-${randomSuffix}`;
-
-    const url = new URL(request.url);
-    const origin = url.origin;
-    const returnUrl = `${origin}/payment/return`;
-
-    const bridgeToken = env.LORA_BRIDGE_CLIENT_TOKEN;
-    const bridgeUrl = (env.LORA_BRIDGE_URL || "https://lorahost.lorapok.tech").replace(/\/$/, "");
-
-    let checkoutUrl = null;
-
-    if (bridgeToken && !bridgeToken.includes("your_lorahost")) {
-      try {
-        const bridgeRes = await fetch(`${bridgeUrl}/api/payment-bridge/v1/sessions`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${bridgeToken}`,
-          },
-          body: JSON.stringify({
-            reference: orderNumber,
-            amount: total,
-            return_url: returnUrl,
-            customer: {
-              name,
-              phone,
-              email: `${orderNumber.toLowerCase()}@bnp.lorapok.tech`,
-            },
-            metadata: {
-              model,
-              reg_number: regBangla,
-              quantity,
-              bracket,
-              district,
-            },
-          }),
-        });
-
-        if (bridgeRes.ok) {
-          const session = await bridgeRes.json();
-          checkoutUrl = session.checkout_url;
-        }
-      } catch (err) {
-        console.warn("LoraHost Bridge call failed, falling back to sandbox:", err);
-      }
-    }
-
-    // Never invent a successful payment session. A bridge failure must fail closed.
-    if (!checkoutUrl) {
-      return new Response(JSON.stringify({ error: "Secure checkout is temporarily unavailable. No payment was initiated." }), {
-        status: 503,
-        headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
-      });
-    }
-
-    return new Response(
-      JSON.stringify({
-        success: true,
-        orderNumber,
-        order_number: orderNumber,
-        checkoutUrl,
-        checkout_url: checkoutUrl,
-        total,
-      }),
-      {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-  } catch (err) {
-    return new Response(
-      JSON.stringify({ error: "Internal server error: " + (err.message || String(err)) }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+  if (!env?.DB || !env?.LORA_BRIDGE_CLIENT_TOKEN || !env?.LORA_BRIDGE_URL || !env?.BNP_PUBLIC_ORIGIN) {
+    return json({ error: "Secure checkout is not configured." }, 503);
   }
+  let bridgeOrigin, publicOrigin;
+  try {
+    bridgeOrigin = new URL(env.LORA_BRIDGE_URL);
+    publicOrigin = new URL(env.BNP_PUBLIC_ORIGIN);
+    if (bridgeOrigin.protocol !== "https:" || publicOrigin.protocol !== "https:" ||
+        bridgeOrigin.username || bridgeOrigin.password || publicOrigin.username || publicOrigin.password) {
+      throw Error("HTTPS origins required");
+    }
+    if (bridgeOrigin.pathname !== "/" || publicOrigin.pathname !== "/") throw Error("Origin-only URLs required");
+  } catch {
+    return json({ error: "Checkout configuration is invalid." }, 503);
+  }
+
+  let order;
+  try {
+    const body = await request.json();
+    order = await createPendingOrder(env.DB, body);
+  } catch (error) {
+    if (error instanceof OrderValidationError || error?.name === "OrderValidationError") {
+      return json({ error: error.message }, 400);
+    }
+    // Avoid exposing DB or credential details to the client.
+    return json({ error: "Unable to save order." }, 503);
+  }
+
+  let session;
+  try {
+    const response = await fetch(new URL("/api/payment-bridge/v1/sessions", bridgeOrigin), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + env.LORA_BRIDGE_CLIENT_TOKEN
+      },
+      body: JSON.stringify({
+        reference: order.bridgeReference,
+        amount: order.totalBdt,
+        currency: "BDT",
+        return_url: new URL("/payment/return", publicOrigin).href,
+        // Do not put registration documents or registration numbers in metadata.
+        metadata: { order_number: order.orderNumber }
+      })
+    });
+    if (!response.ok) throw Error("Bridge rejected session");
+    session = await response.json();
+    const checkout = new URL(session.checkout_url);
+    if (checkout.protocol !== "https:" || checkout.username || checkout.password ||
+        typeof session.session_id !== "string" || !session.session_id) {
+      throw Error("Bridge session is invalid");
+    }
+    // Session ID is required for subsequent webhook correlation.
+    const result = await env.DB.prepare(
+      "UPDATE payment_attempts SET bridge_session_id=?,status='pending',updated_at=datetime('now') WHERE id=? AND status='initiated'"
+    ).bind(session.session_id, order.attemptId).run();
+    if (result?.meta?.changes !== 1) throw Error("Could not persist bridge session");
+  } catch {
+    // The unpaid order remains durable for reconciliation. Never return a
+    // checkout URL if its bridge session was not durably recorded.
+    return json({ error: "Checkout session unavailable; please contact support before retrying.", orderNumber: order.orderNumber }, 503);
+  }
+  return json({
+    success: true,
+    orderNumber: order.orderNumber,
+    order_number: order.orderNumber,
+    checkoutUrl: session.checkout_url,
+    checkout_url: session.checkout_url,
+    total: order.totalBdt
+  }, 200);
 }
