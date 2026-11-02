@@ -16,6 +16,11 @@ export interface LoraBridgeSessionResponse {
   expires_at?: string;
 }
 
+// Simulated payments are explicitly opt-in and never permitted in production.
+function allowLocalPaymentSimulation(): boolean {
+  return process.env.NODE_ENV === "development" && process.env.LORA_ENABLE_PAYMENT_SIMULATION === "true";
+}
+
 const BRIDGE_BASE_URL = process.env.LORA_BRIDGE_URL || "https://lorahost.lorapok.tech";
 
 /**
@@ -31,7 +36,7 @@ export async function createBridgeSession(
   const returnUrl = `${siteUrl.replace(/\/$/, "")}/payment/return`;
 
   // Fallback simulation for local development without active token
-  if (!token || token.includes("your_lorahost")) {
+  if ((!token || token.includes("your_lorahost")) && allowLocalPaymentSimulation()) {
     console.warn("LORA_BRIDGE_CLIENT_TOKEN not configured. Generating simulated dev checkout session.");
     const mockSessionId = "sim_" + crypto.randomBytes(12).toString("hex");
     return {
@@ -39,6 +44,10 @@ export async function createBridgeSession(
       checkout_url: `${returnUrl}?reference=${encodeURIComponent(params.reference)}&status=success&trx_id=SIM_TRX_${Date.now()}&amount=${params.amount}&session_id=${mockSessionId}&sig=mock_dev_signature`,
       reference: params.reference,
     };
+  }
+
+  if (!token || token.includes("your_lorahost")) {
+    throw new Error("LoraHost bridge credentials are missing; checkout is unavailable.");
   }
 
   const endpoint = `${BRIDGE_BASE_URL.replace(/\/$/, "")}/api/payment-bridge/v1/sessions`;
@@ -122,7 +131,7 @@ export function verifyReturnSignature(params: Record<string, string | string[] |
   }
 
   // Allow bypass in local development if using simulated signature
-  if (providedSig === "mock_dev_signature" && (!secret || secret.includes("your_lorahost"))) {
+  if (providedSig === "mock_dev_signature" && allowLocalPaymentSimulation()) {
     return true;
   }
 
@@ -165,7 +174,7 @@ export function verifyWebhookSignature(rawBody: string, signatureHeader: string 
   const secret = process.env.LORA_WEBHOOK_HMAC_TOKEN;
 
   // Allow bypass in local dev if using mock header
-  if (signatureHeader === "mock_dev_webhook" && (!secret || secret.includes("your_lorahost"))) {
+  if (signatureHeader === "mock_dev_webhook" && allowLocalPaymentSimulation()) {
     return true;
   }
 
