@@ -50,6 +50,11 @@ export async function settleAuthenticatedEvent(db, event) {
       .bind(crypto.randomUUID(),attempt.order_id,attempt.payment_status,orderStatus,"bridge","Authenticated LoraHost event " + e.eventId)
   ]);
   if (results.some(r => !r.success)) throw new SettlementError("Settlement transaction failed");
-  // Rows-written checks must be enforced before production; do not wire yet.
+  // An event insert with an unsuccessful conditional update must not be treated
+  // as settled. This guard is defense-in-depth, not a substitute for an atomic
+  // compare-and-swap transaction at the database boundary.
+  if (results[1]?.meta?.changes !== 1 || results[2]?.meta?.changes !== 1) {
+    throw new SettlementError("Concurrent settlement conflict: manual reconciliation required");
+  }
   return { outcome: "recorded", paymentStatus: orderStatus };
 }
