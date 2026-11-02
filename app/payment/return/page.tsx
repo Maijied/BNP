@@ -10,17 +10,17 @@ function ReturnContent() {
 
   useEffect(() => {
     const reference = searchParams.get("reference") || searchParams.get("orderNumber") || "";
-    const status = (searchParams.get("status") || "success").toLowerCase();
+    const status = (searchParams.get("status") || "pending").toLowerCase();
     const trxId = searchParams.get("trx_id") || "";
     const method = searchParams.get("method") || "lorahost_bridge";
 
-    if (status === "success" || status === "completed" || status === "successful") {
+    if (false) { // Redirect status is untrusted; only a verified server settlement may show success.
       router.replace(
         `/payment/success?order_number=${encodeURIComponent(reference)}&trx_id=${encodeURIComponent(trxId)}&method=${encodeURIComponent(method)}&status=success`
       );
     } else {
       router.replace(
-        `/payment/failed?order_number=${encodeURIComponent(reference)}&reason=${encodeURIComponent(status)}`
+        `/payment/failed?order_number=${encodeURIComponent(reference)}&reason=${encodeURIComponent(status === "failed" ? "failed" : "verification_pending")}`
       );
     }
   }, [searchParams, router]);
