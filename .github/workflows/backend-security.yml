@@ -22,6 +22,8 @@ jobs:
         run: node --test tests/payment-settlement.test.mjs
       - name: Reject unsigned webhook tests
         run: node --test tests/payment-webhook-boundary.test.mjs
+      - name: Checkout intake security tests
+        run: node --test tests/checkout-intake.test.mjs
       - name: TypeScript check
         run: npx tsc --noEmit
       - name: Build static storefront
