@@ -105,10 +105,12 @@ export async function onRequestPost({ request, env }) {
       }
     }
 
-    // Sandbox / fallback checkout URL
+    // Never invent a successful payment session. A bridge failure must fail closed.
     if (!checkoutUrl) {
-      const simSessionId = "sbx_" + Math.random().toString(36).substring(2, 14);
-      checkoutUrl = `${returnUrl}?reference=${encodeURIComponent(orderNumber)}&status=success&trx_id=SBX_TRX_${Date.now()}&amount=${total}&session_id=${simSessionId}&model=${model}&district=${encodeURIComponent(district)}&name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}`;
+      return new Response(JSON.stringify({ error: "Secure checkout is temporarily unavailable. No payment was initiated." }), {
+        status: 503,
+        headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
+      });
     }
 
     return new Response(
