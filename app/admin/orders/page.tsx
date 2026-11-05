@@ -23,9 +23,11 @@ export default function AdminOrdersPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [paymentFilter, setPaymentFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const loadOrders = async () => {
     setLoading(true);
+    setErrorMsg("");
     try {
       const url = new URL("/api/admin/orders", window.location.origin);
       if (searchTerm) url.searchParams.set("q", searchTerm);
@@ -38,9 +40,11 @@ export default function AdminOrdersPage() {
         return;
       }
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Unable to load orders.");
       setOrders(data.orders || []);
     } catch (err) {
-      console.error("Failed to load orders:", err);
+      setErrorMsg(err instanceof Error ? err.message : "Could not load orders.");
+      setOrders([]);
     } finally {
       setLoading(false);
     }
@@ -50,18 +54,18 @@ export default function AdminOrdersPage() {
     loadOrders();
   }, [searchTerm, paymentFilter, statusFilter]);
 
-  const handleUpdateStatus = async (id: number, fields: { payment_status?: PaymentStatus; status?: OrderStatus }) => {
+  const handleUpdateStatus = async (id: string, fields: { status: OrderStatus }) => {
     try {
       const res = await fetch(`/api/admin/orders/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(fields),
       });
-      if (res.ok) {
-        loadOrders();
-      }
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Unable to update fulfillment.");
+      loadOrders();
     } catch (err) {
-      console.error("Failed to update order:", err);
+      setErrorMsg(err instanceof Error ? err.message : "Unable to update order.");
     }
   };
 
@@ -72,8 +76,8 @@ export default function AdminOrdersPage() {
 
   // KPI calculations
   const totalRevenue = orders.reduce((sum, o) => sum + (o.payment_status === "paid" ? o.total : 0), 0);
-  const pendingVerification = orders.filter((o) => o.payment_status === "verifying" || o.payment_status === "pending_payment").length;
-  const inProduction = orders.filter((o) => o.status === "confirmed" || o.status === "printed").length;
+  const pendingVerification = orders.filter((o) => o.payment_status === "unpaid" || o.payment_status === "pending" || o.payment_status === "disputed").length;
+  const inProduction = orders.filter((o) => o.status === "production" || o.status === "qc").length;
 
   return (
     <div className="min-h-screen bg-carbon-900 text-silver-200">
@@ -108,6 +112,8 @@ export default function AdminOrdersPage() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {errorMsg && <div role="alert" className="mb-5 rounded-xl border border-red-500/40 bg-red-950/40 px-4 py-3 text-sm text-red-200">{errorMsg}</div>}
+        <p className="mb-5 text-xs text-silver-500">Orders reflect D1 records. Only verified settlement can change a payment status. Fulfillment changes are audited.</p>
         {/* KPI Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
           <div className="bg-carbon-850 p-5 rounded-xl border border-carbon-700">
@@ -149,8 +155,10 @@ export default function AdminOrdersPage() {
             >
               <option value="all">All Payments</option>
               <option value="paid">Paid</option>
-              <option value="verifying">Verifying</option>
-              <option value="pending_payment">Pending</option>
+              <option value="unpaid">Unpaid</option>
+              <option value="pending">Pending</option>
+              <option value="disputed">Disputed</option>
+              <option value="refunded">Refunded</option>
               <option value="failed">Failed</option>
             </select>
 
@@ -161,8 +169,10 @@ export default function AdminOrdersPage() {
             >
               <option value="all">All Statuses</option>
               <option value="new">New</option>
-              <option value="confirmed">Confirmed</option>
-              <option value="printed">Printed</option>
+              <option value="verification">Verification</option>
+              <option value="production">Production</option>
+              <option value="qc">Quality Check</option>
+              <option value="cancelled">Cancelled</option>
               <option value="shipped">Shipped</option>
               <option value="delivered">Delivered</option>
             </select>
@@ -244,22 +254,13 @@ export default function AdminOrdersPage() {
 
                       {/* Payment Status Dropdown */}
                       <td className="py-3 px-4">
-                        <select
-                          value={order.payment_status}
-                          onChange={(e) => handleUpdateStatus(order.id, { payment_status: e.target.value as PaymentStatus })}
-                          className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg border focus:outline-none ${
-                            order.payment_status === "paid"
-                              ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/30"
-                              : order.payment_status === "verifying"
-                              ? "bg-yellow-500/20 text-yellow-300 border-yellow-500/30"
-                              : "bg-red-500/20 text-red-300 border-red-500/30"
-                          }`}
-                        >
-                          <option value="pending_payment" className="bg-carbon-900 text-white">Pending</option>
-                          <option value="verifying" className="bg-carbon-900 text-white">Verifying</option>
-                          <option value="paid" className="bg-carbon-900 text-white">Paid</option>
-                          <option value="failed" className="bg-carbon-900 text-white">Failed</option>
-                        </select>
+                        <span className={`inline-flex text-[11px] font-semibold px-2.5 py-1 rounded-lg border ${
+                          order.payment_status === "paid"
+                            ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/30"
+                            : "bg-yellow-500/10 text-yellow-200 border-yellow-500/30"
+                        }`} title="Payment status is verified by the LoraHost settlement service, not editable here">
+                          {order.payment_status}
+                        </span>
                         {order.trx_note && (
                           <span className="text-[10px] text-yellow-400 font-mono block mt-0.5">
                             Trx: {order.trx_note}
@@ -271,14 +272,17 @@ export default function AdminOrdersPage() {
                       <td className="py-3 px-4">
                         <select
                           value={order.status}
+                          disabled={order.status === "delivered" || order.status === "cancelled"}
                           onChange={(e) => handleUpdateStatus(order.id, { status: e.target.value as OrderStatus })}
-                          className="text-[11px] font-medium bg-carbon-800 text-silver-300 border border-carbon-700 px-2 py-1 rounded-lg focus:outline-none"
+                          className="text-[11px] font-medium bg-carbon-800 text-silver-300 border border-carbon-700 px-2 py-1 rounded-lg focus:outline-none disabled:opacity-50"
                         >
                           <option value="new">New</option>
-                          <option value="confirmed">Confirmed</option>
-                          <option value="printed">Printed</option>
+                          <option value="verification">Verification</option>
+                          <option value="production">Production</option>
+                          <option value="qc">Quality Check</option>
                           <option value="shipped">Shipped</option>
                           <option value="delivered">Delivered</option>
+                          <option value="cancelled">Cancelled</option>
                         </select>
                       </td>
 
