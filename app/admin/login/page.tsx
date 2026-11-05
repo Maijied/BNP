@@ -7,7 +7,8 @@ import { Lock, Mail, ShieldAlert, ArrowRight, Loader2 } from "lucide-react";
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const from = searchParams.get("from") || "/admin/orders";
+  const requestedFrom = searchParams.get("from") || "/admin/orders";
+  const from = requestedFrom.startsWith("/admin/") && !requestedFrom.startsWith("//") && !requestedFrom.includes("://") ? requestedFrom : "/admin/orders";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
