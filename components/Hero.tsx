@@ -3,7 +3,7 @@ import { ShieldCheck, Award, ArrowRight, Zap, CheckCircle2, Sparkles, ExternalLi
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden pt-8 pb-16 lg:pt-16 lg:pb-24 border-b border-carbon-700/50 bg-carbon-gradient">
+    <section className="bnp-cinematic-hero relative isolate overflow-hidden pt-16 pb-20 lg:pt-28 lg:pb-32 border-b border-carbon-700/50 bg-carbon-gradient">
       {/* Background Accent Gradients */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-bnp-glow/10 filter blur-3xl pointer-events-none" />
       <div className="absolute top-1/4 right-10 w-72 h-72 bg-gold/5 filter blur-3xl pointer-events-none" />
@@ -28,67 +28,23 @@ export default function Hero() {
             </div>
 
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-display font-extrabold tracking-tight text-white leading-[1.15] mb-5">
-              Mirror Silver <br className="hidden sm:inline" />
+              Precision Built. <br className="hidden sm:inline" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-silver-100 via-silver-400 to-silver-600">
-                Steel Bike Plates
+                Made to Ride.
               </span>
             </h1>
 
             <p className="text-base sm:text-lg text-silver-400 max-w-2xl mb-4 font-sans leading-relaxed">
-              Tagline: <strong className="text-white font-semibold">Premium Quality | Durable | Stylish</strong>. 
+              <strong className="text-white font-semibold">Premium Quality. Durable. Distinctive.</strong> 
               Engineered with laser-cut <span className="text-silver-200">0.8 mm mirror-finish stainless steel</span> and 
-              BRTA-compliant aluminum standards. Built to outlast Bangladesh weather, dust, and daily commutes.
+              front-plate manufacturing options. Built to outlast Bangladesh weather, dust, and daily commutes.
             </p>
 
-            {/* Strategic Partnership Showcase Card */}
-            <div className="w-full max-w-xl p-4 mb-6 rounded-2xl bg-carbon-850/90 border border-carbon-700/80 shadow-glass-panel backdrop-blur-md text-left">
-              <div className="flex items-center justify-between gap-2 mb-3 pb-2.5 border-b border-carbon-750">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-bnp" />
-                  <span className="text-xs uppercase font-extrabold tracking-wider text-white">
-                    Strategic Technology & Payment Partnership
-                  </span>
-                </div>
-                <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-bnp/20 text-bnp-light border border-bnp/30">
-                  OFFICIAL
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* Partner 1: Lorapok Labs */}
-                <a
-                  href="https://lorapok.tech"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-3 rounded-xl bg-carbon-900/80 hover:bg-carbon-900 border border-carbon-700 hover:border-bnp/50 transition-all group block"
-                >
-                  <div className="flex items-center justify-between text-xs font-bold text-white mb-1">
-                    <span className="group-hover:text-bnp transition-colors">Lorapok Labs</span>
-                    <ExternalLink className="w-3 h-3 text-silver-500 group-hover:text-bnp" />
-                  </div>
-                  <p className="text-[11px] text-silver-400 leading-snug">
-                    Biological UI & Sensory Design Systems. Creator of developer platforms & AI orchestration.
-                  </p>
-                  <span className="text-[10px] text-silver-500 font-mono mt-1.5 block">lorapok.tech ↗</span>
-                </a>
-
-                {/* Partner 2: LoraHost */}
-                <a
-                  href="https://lorahost.lorapok.tech"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-3 rounded-xl bg-carbon-900/80 hover:bg-carbon-900 border border-carbon-700 hover:border-emerald-500/50 transition-all group block"
-                >
-                  <div className="flex items-center justify-between text-xs font-bold text-white mb-1">
-                    <span className="group-hover:text-emerald-400 transition-colors">LoraHost Gateway</span>
-                    <ExternalLink className="w-3 h-3 text-silver-500 group-hover:text-emerald-400" />
-                  </div>
-                  <p className="text-[11px] text-silver-400 leading-snug">
-                    Sovereign Cloud & Payment Bridge. Instant automated bKash, Nagad & Card processing via PayStation.
-                  </p>
-                  <span className="text-[10px] text-silver-500 font-mono mt-1.5 block">lorahost.lorapok.tech ↗</span>
-                </a>
-              </div>
+            {/* Brand storytelling stays customer-first; partner credit belongs in the footer. */}
+            <div className="mb-8 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-silver-400">
+              <span className="h-px w-10 bg-bnp" />
+              Engineered for the ride
+              <span className="h-px w-10 bg-bnp" />
             </div>
 
             {/* Micro Feature Bullets */}
@@ -103,7 +59,7 @@ export default function Hero() {
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-bnp shrink-0" />
-                <span>BRTA Size Compliant</span>
+                <span>Model-specific sizing</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-bnp shrink-0" />
@@ -147,7 +103,7 @@ export default function Hero() {
                   <Zap className="w-3.5 h-3.5 text-bnp" /> Live Specimen
                 </span>
                 <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
-                  BRTA 2026 Ready
+                  Sample plate preview
                 </span>
               </div>
 
@@ -193,7 +149,7 @@ export default function Hero() {
 
               <div className="mt-6 pt-4 border-t border-carbon-800/80 text-center">
                 <p className="text-[11px] text-silver-500 font-sans">
-                  Laser precision cutting with exact BRTA slot distances.
+                  Preview illustration — verify registration details and current BRTA rules before ordering.
                 </p>
               </div>
             </div>
