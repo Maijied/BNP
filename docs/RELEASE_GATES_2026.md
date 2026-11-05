@@ -34,4 +34,4 @@ Cloudflare environment values can be changed without code review; run the same s
 
 
 ## Pathao draft integration
-See [PATHAO_INTEGRATION.md](PATHAO_INTEGRATION.md) for the prepaid courier implementation and owner setup. Apply staging migration `0003_pathao_shipments.sql` after the previous migrations. Checkout, settlement and real dispatch remain blocked until the payment and provider-contract gates pass. Never backfill settlement proof from paid flags.
+See [PATHAO_INTEGRATION.md](PATHAO_INTEGRATION.md) for the prepaid courier implementation and owner setup. Apply staging migrations `0003_pathao_shipments.sql`, `0004_pathao_scope_webhooks.sql` and `0005_pathao_store_requests.sql` in order after the previous migrations. The BNP orders DB must remain single merchant/product. Production webhook event processing remains blocked pending confirmed schema. Checkout, settlement and real dispatch remain blocked until the payment and provider-contract gates pass. Never backfill settlement proof from paid flags.

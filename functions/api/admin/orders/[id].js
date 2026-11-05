@@ -1,5 +1,6 @@
 import { isAdmin, isSameOrigin, json } from "../../../_lib/admin-auth.js";
 
+import { pathaoScope } from "../../../_lib/pathao.js";
 import { settlementPredicate } from "../../../_lib/shipment-store.js";
 
 const allowed = new Set(["new", "verification", "production", "qc", "shipped", "delivered", "cancelled"]);
@@ -31,11 +32,12 @@ export async function onRequestPatch({ request, env, params }) {
     if (["production", "qc", "shipped", "delivered"].includes(body.status) && before.payment_status !== "paid") {
       return json({ error: "Verified payment is required before production or dispatch." }, 409);
     }
+    const scope = ["shipped", "delivered"].includes(body.status) ? pathaoScope(env) : { merchant: "", product: "" };
     if (["shipped", "delivered"].includes(body.status)) {
       const shipment = await env.DB.prepare(`SELECT 1 AS confirmed FROM orders o
         JOIN courier_shipments c ON c.order_id = o.id
         WHERE o.id = ? AND ${settlementPredicate} AND c.state = 'created'
-        AND c.environment = 'production' AND c.consignment_id IS NOT NULL`).bind(id).first();
+        AND c.environment = 'production' AND c.merchant_key = ? AND c.product_key = ? AND c.consignment_id IS NOT NULL`).bind(id, scope.merchant, scope.product).first();
       if (!shipment) return json({ error: "A confirmed production Pathao booking and verified settlement are required." }, 409);
     }
     const actor = env.ADMIN_EMAIL.toLowerCase();
@@ -45,8 +47,8 @@ export async function onRequestPatch({ request, env, params }) {
         AND (? NOT IN ('production','qc','shipped','delivered') OR payment_status = 'paid')
         AND (? NOT IN ('shipped','delivered') OR (${settlementPredicate} AND EXISTS (
           SELECT 1 FROM courier_shipments c WHERE c.order_id = o.id AND c.state = 'created'
-          AND c.environment = 'production' AND c.consignment_id IS NOT NULL)))`)
-        .bind(body.status, id, before.fulfillment_status, body.status, body.status),
+          AND c.environment = 'production' AND c.merchant_key = ? AND c.product_key = ? AND c.consignment_id IS NOT NULL)))`)
+        .bind(body.status, id, before.fulfillment_status, body.status, body.status, scope.merchant, scope.product),
       env.DB.prepare("INSERT INTO order_status_history (id, order_id, from_status, to_status, actor_type, actor_id, reason) SELECT ?, ?, ?, ?, 'admin', ?, 'admin dashboard' WHERE changes() = 1")
         .bind(crypto.randomUUID(), id, before.fulfillment_status, body.status, actor),
     ]);
