@@ -208,7 +208,7 @@ function BNPExperience() {
           ) : (
             <a href="#vip-gate" className="bn-vip-pill locked">
               <Lock size={11}/>
-              <span>{t("অ্যাডমিন পিন গেট", "ADMIN PIN GATE")}</span>
+              <span>{t("অ্যাডমিন পাসকোড গেট", "ADMIN PASSCODE GATE")}</span>
             </a>
           )}
           <label>
@@ -241,10 +241,10 @@ function BNPExperience() {
             type="button"
             className={`bn-nav-lock ${isVipUnlocked ? "unlocked" : "locked"}`}
             onClick={() => isVipUnlocked ? handleRelock() : setPinModalOpen(true)}
-            aria-label={isVipUnlocked ? t("ভিআইপি আনলকড, লক করুন", "VIP Unlocked, click to lock") : t("স্টুডিও লকড, পিন দিন", "Studio Locked, click to enter PIN")}
+            aria-label={isVipUnlocked ? t("ভিআইপি আনলকড, লক করুন", "VIP Unlocked, click to lock") : t("স্টুডিও লকড, পাসকোড দিন", "Studio Locked, click to enter Passcode")}
           >
             {isVipUnlocked ? <Unlock size={13} color="#52c41a" /> : <Lock size={13} color="#ff4b5c" />}
-            <span>{isVipUnlocked ? t("আনলক", "UNLOCKED") : t("লক (PIN)", "LOCKED")}</span>
+            <span>{isVipUnlocked ? t("আনলক", "UNLOCKED") : t("লকড", "LOCKED")}</span>
           </button>
           <button className="bn-language" onClick={() => setLang(lang === "bn" ? "en" : "bn")} aria-label={lang === "bn" ? "Switch to English" : "Switch to Bangla"}>
             <span className={lang === "bn" ? "active" : ""}>BN / বাংলা</span>
@@ -331,7 +331,7 @@ function BNPExperience() {
           <div className="bn-prelaunch-header">
             <p className="bn-eyebrow"><span/>00 / {t("প্রি-লঞ্চ ভিআইপি প্রদর্শনী", "PRE-LAUNCH VIP EXHIBITION")}</p>
             <h2 id="prelaunch-title">{t("পাবলিক লঞ্চের বাকি সময় ও আসল ছবির গ্যালারি।", "LAUNCH COUNTDOWN & ATELIER LOOKBOOK.")}</h2>
-            <p>{t("অ্যাডমিনের অনুমোদন সাপেক্ষে সাধারণ বাণিজ্যিক অর্ডার গ্রহণ শুরু হবে। ততদিন পর্যন্ত আসল মোটরসাইকেল ও প্লেটের লুকবুক দেখুন, অথবা অনুমোদিত ৬ ডিজিটের ভিআইপি পিন দিয়ে স্টুডিও আনলক করুন।", "Public commercial intake will begin once official admin clearance is released. Until then, explore authentic photography from our atelier lookbook below, or enter the authorized 6-digit VIP PIN to test the studio.")}</p>
+            <p>{t("অ্যাডমিনের অনুমোদন সাপেক্ষে সাধারণ বাণিজ্যিক অর্ডার গ্রহণ শুরু হবে। ততদিন পর্যন্ত আসল মোটরসাইকেল ও প্লেটের লুকবুক দেখুন, অথবা অনুমোদিত ভিআইপি পাসকোড দিয়ে স্টুডিও আনলক করুন।", "Public commercial intake will begin once official admin clearance is released. Until then, explore authentic photography from our atelier lookbook below, or enter the authorized VIP passcode to test the studio.")}</p>
           </div>
 
           {/* Professional Countdown Timer */}
@@ -407,7 +407,7 @@ function BNPExperience() {
             </div>
           </div>
 
-          {/* VIP PIN Gate Card */}
+          {/* VIP Passcode Gate Card */}
           <div className="bn-vip-gate-card" id="vip-gate">
             <div className="bn-vip-gate-info">
               <div className="bn-vip-icon">
@@ -625,7 +625,7 @@ function BNPExperience() {
       </button>
     </div>
 
-    {/* Quick PIN Modal */}
+    {/* Quick Passcode Modal */}
     {pinModalOpen && (
       <div className="bn-pin-modal-overlay" role="dialog" aria-modal="true" aria-label={t("ভিআইপি স্টুডিও আনলক", "Unlock VIP Atelier")} onClick={() => setPinModalOpen(false)}>
         <div className="bn-pin-modal-content" onClick={e => e.stopPropagation()}>
