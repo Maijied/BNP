@@ -9,6 +9,7 @@ export default function AdminSettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [readOnly, setReadOnly] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
 
   const [settings, setSettings] = useState({
@@ -19,7 +20,7 @@ export default function AdminSettingsPage() {
     bracket_price: 80,
     delivery_dhaka: 60,
     delivery_outside: 120,
-    urgency_text: "BRTA deadline: November 15 — order your compliant plate today",
+    urgency_text: "Check current BRTA requirements before ordering.",
     hotline: "01632333221",
     whatsapp: "01914-873925",
   });
@@ -36,6 +37,7 @@ export default function AdminSettingsPage() {
       .then((data) => {
         if (data?.settings) {
           setSettings(data.settings);
+          setReadOnly(Boolean(data.read_only));
         }
         setLoading(false);
       })
@@ -91,7 +93,7 @@ export default function AdminSettingsPage() {
 
         <button
           onClick={handleSubmit}
-          disabled={saving}
+          disabled={saving || readOnly}
           className="inline-flex items-center gap-2 bg-bnp hover:bg-bnp-hover text-white text-xs font-semibold px-4 py-2 rounded-xl shadow-bnp-glow transition-all disabled:opacity-50"
         >
           {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
@@ -100,10 +102,11 @@ export default function AdminSettingsPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {readOnly && <div className="mb-5 rounded-xl border border-amber-500/30 bg-amber-950/20 p-4 text-sm text-amber-200">Settings are read-only until the database-backed pricing service is linked to checkout. No changes can be saved yet.</div>}
         {saved && (
           <div className="mb-6 p-4 rounded-xl bg-emerald-950/60 border border-emerald-500 text-emerald-200 text-xs flex items-center gap-2">
             <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span>Store settings saved successfully and live on storefront!</span>
+            <span>Settings saved.</span>
           </div>
         )}
 
