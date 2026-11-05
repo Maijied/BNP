@@ -95,7 +95,7 @@ const LOOKBOOK_PHOTOS = [
   }
 ];
 
-const VALID_PINS = ["565087", typeof process !== "undefined" ? process.env?.NEXT_PUBLIC_LAUNCH_PIN : undefined].filter(Boolean) as string[];
+const VALID_PASSCODES = ["Joy1001", typeof process !== "undefined" ? process.env?.NEXT_PUBLIC_LAUNCH_PIN : undefined].filter(Boolean) as string[];
 
 function BNPExperience() {
   const { model, setModel } = useStorefront();
@@ -136,7 +136,8 @@ function BNPExperience() {
   // Safe check for VIP access in sessionStorage
   useEffect(() => {
     try {
-      if (typeof window !== "undefined" && window.sessionStorage?.getItem("bnp_vip_access") === "565087") {
+      const stored = typeof window !== "undefined" ? window.sessionStorage?.getItem("bnp_vip_access") : null;
+      if (stored === "granted" || stored === "Joy1001") {
         setIsVipUnlocked(true);
       }
     } catch {
@@ -162,17 +163,17 @@ function BNPExperience() {
 
   function handlePinSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (VALID_PINS.includes(pinInput.trim())) {
+    if (VALID_PASSCODES.includes(pinInput.trim())) {
       setIsVipUnlocked(true);
       setPinError("");
       setPinModalOpen(false);
       try {
-        window.sessionStorage?.setItem("bnp_vip_access", "565087");
+        window.sessionStorage?.setItem("bnp_vip_access", "granted");
       } catch {
         // ignore storage error
       }
     } else {
-      setPinError(lang === "bn" ? "ভুল পিন কোড। অ্যাডমিনের সঠিক পিন দিন (৫৬৫০৮৭)।" : "Invalid PIN code. Please enter the authorized PIN (565087).");
+      setPinError(lang === "bn" ? "ভুল পাসকোড। অনুমোদিত ভিআইপি পাসকোড দিন।" : "Invalid passcode. Please enter the authorized VIP passcode.");
     }
   }
 
@@ -284,8 +285,8 @@ function BNPExperience() {
             ) : (
               <div className="bn-hero-lock-pill locked">
                 <Lock size={14} className="bn-pulse-icon"/>
-                <span>{t("প্রি-লঞ্চ মোড · অ্যাডমিন পিন কোড প্রয়োজন", "PRE-LAUNCH MODE · GATED BY ADMIN PIN")}</span>
-                <button type="button" onClick={() => setPinModalOpen(true)}>{t("পিন দিন (565087)", "Enter PIN (565087)")}</button>
+                <span>{t("প্রি-লঞ্চ মোড · অ্যাডমিন পাসকোড প্রয়োজন", "PRE-LAUNCH MODE · GATED BY ADMIN PASS")}</span>
+                <button type="button" onClick={() => setPinModalOpen(true)}>{t("পাসকোড দিন", "Enter Passcode")}</button>
               </div>
             )}
           </div>
@@ -308,7 +309,7 @@ function BNPExperience() {
             {isVipUnlocked ? (
               <>{t("প্লেট তৈরি করুন", "Customize your plate")}<ArrowUpRight size={22}/></>
             ) : (
-              <><Lock size={18}/> {t("ভিআইপি স্টুডিও আনলক করুন", "Unlock Studio with PIN")}<ArrowRight size={18}/></>
+              <><Lock size={18}/> {t("ভিআইপি স্টুডিও আনলক করুন", "Unlock Studio with Passcode")}<ArrowRight size={18}/></>
             )}
           </button>
           <a className="bn-hero-explore" href="#pre-launch">
@@ -413,11 +414,11 @@ function BNPExperience() {
                 {isVipUnlocked ? <Unlock size={24} color="#52c41a" /> : <Lock size={24} color="#ed1b2f" />}
               </div>
               <div>
-                <h3>{isVipUnlocked ? t("ভিআইপি স্টুডিও আনলক সম্পন্ন", "VIP Atelier Studio Unlocked") : t("অ্যাডমিন / ভিআইপি পিন এন্ট্রি", "Admin / VIP PIN Access")}</h3>
+                <h3>{isVipUnlocked ? t("ভিআইপি স্টুডিও আনলক সম্পন্ন", "VIP Atelier Studio Unlocked") : t("অ্যাডমিন / ভিআইপি পাসকোড এন্ট্রি", "Admin / VIP Passcode Access")}</h3>
                 <p>
                   {isVipUnlocked
                     ? t("আপনার ভিআইপি অ্যাক্সেস সক্রিয় রয়েছে। নিচের প্লেট কালেকশন থেকে যে কোনো ফরম্যাট বেছে কাস্টমাইজেশন করুন।", "VIP access is active for this session. Choose a plate format below to customize details.")
-                    : t("পাবলিক অর্ডার ইনটেক এখনও অ্যাডমিন দ্বারা অনুমোদিত হয়নি। স্টুডিও ও কাস্টমাইজেশন প্রিভিউ দেখতে ৬ ডিজিটের পিন (565087) দিন।", "Commercial ordering has not been released by the admin yet. Enter the 6-digit VIP PIN (565087) to unlock the studio.")}
+                    : t("পাবলিক অর্ডার ইনটেক এখনও অ্যাডমিন দ্বারা অনুমোদিত হয়নি। স্টুডিও ও কাস্টমাইজেশন প্রিভিউ দেখতে অনুমোদিত ভিআইপি পাসকোড দিন।", "Commercial ordering has not been released by the admin yet. Enter authorized VIP passcode to unlock the studio.")}
                 </p>
               </div>
             </div>
@@ -436,12 +437,11 @@ function BNPExperience() {
                   <KeyRound size={17} className="bn-pin-key-icon" />
                   <input
                     type="password"
-                    inputMode="numeric"
-                    maxLength={10}
-                    placeholder={t("৬ ডিজিটের পিন (উদাঃ 565087)", "Enter 6-digit PIN (e.g. 565087)")}
+                    maxLength={30}
+                    placeholder={t("ভিআইপি পাসকোড লিখুন", "Enter VIP passcode")}
                     value={pinInput}
                     onChange={e => { setPinInput(e.target.value); if (pinError) setPinError(""); }}
-                    aria-label={t("ভিআইপি পিন কোড", "VIP PIN Code")}
+                    aria-label={t("ভিআইপি পাসকোড", "VIP Passcode")}
                   />
                   <button type="submit" className="bn-button bn-pin-submit">
                     {t("আনলক করুন", "Unlock Studio")} <ArrowRight size={17} />
@@ -522,12 +522,12 @@ function BNPExperience() {
                 <Lock size={18} color="#ff4b5c" />
               </div>
               <div>
-                <strong>{t("🔒 স্টুডিও বর্তমানে পিন দ্বারা লকড (প্রিভিউ মোড)", "🔒 Studio Gated by PIN (Preview Mode)")}</strong>
-                <p>{t("সম্পূর্ণ কাস্টমাইজেশন ও অর্ডার সাবমিশনের জন্য পিন প্রয়োজন।", "Full customization and request submission require VIP PIN clearance.")}</p>
+                <strong>{t("🔒 স্টুডিও বর্তমানে পাসকোড দ্বারা লকড (প্রিভিউ মোড)", "🔒 Studio Gated by Passcode (Preview Mode)")}</strong>
+                <p>{t("সম্পূর্ণ কাস্টমাইজেশন ও অর্ডার সাবমিশনের জন্য অনুমোদিত পাসকোড প্রয়োজন।", "Full customization and request submission require authorized VIP passcode clearance.")}</p>
               </div>
             </div>
             <button type="button" className="bn-button bn-outline bn-pin-jump" onClick={() => setPinModalOpen(true)}>
-              <KeyRound size={14} /> {t("পিন দিন (565087)", "Enter PIN (565087)")}
+              <KeyRound size={14} /> {t("পাসকোড দিন", "Enter Passcode")}
             </button>
           </div>
         )}
@@ -621,7 +621,7 @@ function BNPExperience() {
         onClick={() => isVipUnlocked ? handleRelock() : setPinModalOpen(true)}
       >
         {isVipUnlocked ? <Unlock size={16} /> : <Lock size={16} className="bn-pulse-icon" />}
-        <span>{isVipUnlocked ? t("ভিআইপি সক্রিয় (লক)", "VIP ACTIVE (LOCK)") : t("স্টুডিও লকড (PIN 565087)", "STUDIO LOCKED (PIN 565087)")}</span>
+        <span>{isVipUnlocked ? t("ভিআইপি সক্রিয় (লক)", "VIP ACTIVE (LOCK)") : t("স্টুডিও লকড · পাসকোড দিন", "STUDIO LOCKED · ENTER PASS")}</span>
       </button>
     </div>
 
@@ -636,21 +636,20 @@ function BNPExperience() {
             <div className="bn-lock-circle" style={{ margin: "0 auto 12px" }}>
               <Lock size={22} color="#ed1b2f" />
             </div>
-            <h3>{t("ভিআইপি স্টুডিও পিন এন্ট্রি", "VIP Atelier Studio PIN")}</h3>
-            <p>{t("অ্যাডমিনের আনুষ্ঠানিক নির্দেশ সাপেক্ষে সাধারণ অর্ডার শুরু হবে। প্রি-লঞ্চ স্টুডিও আনলক করতে অনুমোদিত ৬ ডিজিটের পিন (565087) দিন।", "Public order intake is restricted pending admin clearance. Enter authorized 6-digit VIP PIN (565087) to unlock the studio.")}</p>
+            <h3>{t("ভিআইপি স্টুডিও পাসকোড এন্ট্রি", "VIP Atelier Passcode")}</h3>
+            <p>{t("অ্যাডমিনের আনুষ্ঠানিক নির্দেশ সাপেক্ষে সাধারণ অর্ডার শুরু হবে। প্রি-লঞ্চ স্টুডিও আনলক করতে অনুমোদিত ভিআইপি পাসকোড দিন।", "Public order intake is restricted pending admin clearance. Enter authorized VIP passcode to unlock the studio.")}</p>
           </div>
           <form className="bn-pin-form" onSubmit={handlePinSubmit}>
             <div className="bn-pin-input-group">
               <KeyRound size={17} className="bn-pin-key-icon" />
               <input
                 type="password"
-                inputMode="numeric"
-                maxLength={10}
+                maxLength={30}
                 autoFocus
-                placeholder={t("৬ ডিজিটের পিন (565087)", "6-digit PIN (565087)")}
+                placeholder={t("ভিআইপি পাসকোড লিখুন", "Enter VIP passcode")}
                 value={pinInput}
                 onChange={e => { setPinInput(e.target.value); if (pinError) setPinError(""); }}
-                aria-label={t("ভিআইপি পিন কোড", "VIP PIN Code")}
+                aria-label={t("ভিআইপি পাসকোড", "VIP Passcode")}
               />
               <button type="submit" className="bn-button bn-pin-submit">
                 {t("আনলক করুন", "Unlock")} <ArrowRight size={16} />
