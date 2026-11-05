@@ -112,6 +112,7 @@ function BNPExperience() {
   const [pinError, setPinError] = useState("");
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [pinModalOpen, setPinModalOpen] = useState(false);
 
   const t = (bn: string, en: string) => lang === "bn" ? bn : en;
 
@@ -147,13 +148,24 @@ function BNPExperience() {
     requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView({ behavior: reduced || paused ? "auto" : "smooth", block: "start" }));
   }
   function studio(next = 1) { if (shopLocked) return; setHasChosenPlate(true); setStep(next); scrollToSection("designer"); setMenu(false); }
-  function beginSelection() { if (shopLocked) return; scrollToSection("collection"); setMenu(false); }
+  function beginSelection() {
+    if (shopLocked) return;
+    if (!isVipUnlocked) {
+      setPinModalOpen(true);
+      scrollToSection("vip-gate");
+      setMenu(false);
+      return;
+    }
+    scrollToSection("collection");
+    setMenu(false);
+  }
 
   function handlePinSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (VALID_PINS.includes(pinInput.trim())) {
       setIsVipUnlocked(true);
       setPinError("");
+      setPinModalOpen(false);
       try {
         window.sessionStorage?.setItem("bnp_vip_access", "565087");
       } catch {
@@ -168,6 +180,7 @@ function BNPExperience() {
     setIsVipUnlocked(false);
     setPinInput("");
     setPinError("");
+    setPinModalOpen(false);
     try {
       window.sessionStorage?.removeItem("bnp_vip_access");
     } catch {
@@ -223,13 +236,22 @@ function BNPExperience() {
           <a href="#tracking">{t("ট্র্যাকিং", "Tracking")}</a>
         </nav>
         <div className="bn-nav-actions">
+          <button
+            type="button"
+            className={`bn-nav-lock ${isVipUnlocked ? "unlocked" : "locked"}`}
+            onClick={() => isVipUnlocked ? handleRelock() : setPinModalOpen(true)}
+            aria-label={isVipUnlocked ? t("ভিআইপি আনলকড, লক করুন", "VIP Unlocked, click to lock") : t("স্টুডিও লকড, পিন দিন", "Studio Locked, click to enter PIN")}
+          >
+            {isVipUnlocked ? <Unlock size={13} color="#52c41a" /> : <Lock size={13} color="#ff4b5c" />}
+            <span>{isVipUnlocked ? t("আনলক", "UNLOCKED") : t("লক (PIN)", "LOCKED")}</span>
+          </button>
           <button className="bn-language" onClick={() => setLang(lang === "bn" ? "en" : "bn")} aria-label={lang === "bn" ? "Switch to English" : "Switch to Bangla"}>
             <span className={lang === "bn" ? "active" : ""}>BN / বাংলা</span>
             <i/>
             <span className={lang === "en" ? "active" : ""}>EN</span>
           </button>
           <button className="bn-button bn-nav-cta" disabled={shopLocked} onClick={beginSelection}>
-            {t("প্লেট তৈরি করুন", "Customize yours")}<ArrowUpRight size={17}/>
+            {isVipUnlocked ? t("প্লেট তৈরি করুন", "Customize yours") : t("ভিআইপি আনলক", "VIP Unlock")}<ArrowUpRight size={17}/>
           </button>
           <button className="bn-menu-button" aria-expanded={menu} aria-controls="bn-mobile-menu" aria-label={t("মেনু খুলুন", "Open menu")} onClick={() => setMenu(!menu)}>
             {menu ? <X/> : <Menu/>}
@@ -251,6 +273,29 @@ function BNPExperience() {
         <div className="bn-hero-shade" aria-hidden="true"/>
         <div className="bn-wrap bn-hero-copy">
           <motion.p initial={false} className="bn-eyebrow"><span/>BNP / BIKE NUMBER PLATE</motion.p>
+
+          <div className="bn-hero-lock-status">
+            {isVipUnlocked ? (
+              <div className="bn-hero-lock-pill unlocked">
+                <Unlock size={14}/>
+                <span>{t("ভিআইপি স্টুডিও সক্রিয়", "VIP ATELIER ACCESS ACTIVE")}</span>
+                <button type="button" onClick={handleRelock}>{t("লক করুন", "Lock Gate")}</button>
+              </div>
+            ) : (
+              <div className="bn-hero-lock-pill locked">
+                <Lock size={14} className="bn-pulse-icon"/>
+                <span>{t("প্রি-লঞ্চ মোড · অ্যাডমিন পিন কোড প্রয়োজন", "PRE-LAUNCH MODE · GATED BY ADMIN PIN")}</span>
+                <button type="button" onClick={() => setPinModalOpen(true)}>{t("পিন দিন (565087)", "Enter PIN (565087)")}</button>
+              </div>
+            )}
+          </div>
+
+          <div className="bn-hero-countdown-pill" role="timer" aria-label={t("কাউন্টডাউন", "Countdown")}>
+            <Clock size={14}/>
+            <span>{t("লঞ্চ বাকি:", "Launch in:")}</span>
+            <strong>{lang === "bn" ? toBanglaDigits(timeLeft.days) : String(timeLeft.days).padStart(2, "0")}{t("দিন", "d")} : {lang === "bn" ? toBanglaDigits(String(timeLeft.hours).padStart(2, "0")) : String(timeLeft.hours).padStart(2, "0")}{t("ঘ", "h")} : {lang === "bn" ? toBanglaDigits(String(timeLeft.minutes).padStart(2, "0")) : String(timeLeft.minutes).padStart(2, "0")}{t("মি", "m")} : {lang === "bn" ? toBanglaDigits(String(timeLeft.seconds).padStart(2, "0")) : String(timeLeft.seconds).padStart(2, "0")}{t("সে", "s")}</strong>
+          </div>
+
           <motion.h1 id="bn-title" initial={paused || reduced ? false : { opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: paused || reduced ? 0 : .6 }}>
             {lang === "bn" ? <>আপনার রাইড।<br/><em>আপনার স্বাক্ষর।</em></> : <>YOUR RIDE.<br/>YOUR<br/><em>SIGNATURE.</em></>}
           </motion.h1>
@@ -260,10 +305,14 @@ function BNPExperience() {
             {t("নিজের তথ্য দিন, তারপর অর্ডার পর্যালোচনা করুন।", "Add your details. Review every finishing touch.")}
           </p>
           <button className="bn-button" disabled={shopLocked} onClick={beginSelection}>
-            {t("প্লেট তৈরি করুন", "Customize your plate")}<ArrowUpRight size={22}/>
+            {isVipUnlocked ? (
+              <>{t("প্লেট তৈরি করুন", "Customize your plate")}<ArrowUpRight size={22}/></>
+            ) : (
+              <><Lock size={18}/> {t("ভিআইপি স্টুডিও আনলক করুন", "Unlock Studio with PIN")}<ArrowRight size={18}/></>
+            )}
           </button>
-          <a className="bn-hero-explore" href="#collection">
-            {t("প্লেট দেখুন", "Explore the collection")}<ArrowDown size={18}/>
+          <a className="bn-hero-explore" href="#pre-launch">
+            {t("📸 ছবির লুকবুক ও টাইমার", "📸 View Photo Lookbook & Timer")}<ArrowDown size={18}/>
           </a>
           <span className="bn-hero-index">01 / THE BNP COLLECTION</span>
         </div>
@@ -468,13 +517,18 @@ function BNPExperience() {
       <div className="bn-order-reveal" hidden={!hasChosenPlate && !shopLocked}>
         {!isVipUnlocked && !shopLocked && (
           <div className="bn-studio-gate-banner" role="status">
-            <div>
-              <strong>{t("ভিআইপি গেট সক্রিয় — প্রিভিউ মোড চালু", "VIP Gate Gated — Preview Mode Active")}</strong>
-              <p>{t("সম্পূর্ণ কাস্টমাইজেশন ও অর্ডার সাবমিশনের জন্য পিন প্রয়োজন।", "Full customization and request submission require VIP PIN clearance.")}</p>
+            <div className="bn-gate-banner-left">
+              <div className="bn-lock-circle">
+                <Lock size={18} color="#ff4b5c" />
+              </div>
+              <div>
+                <strong>{t("🔒 স্টুডিও বর্তমানে পিন দ্বারা লকড (প্রিভিউ মোড)", "🔒 Studio Gated by PIN (Preview Mode)")}</strong>
+                <p>{t("সম্পূর্ণ কাস্টমাইজেশন ও অর্ডার সাবমিশনের জন্য পিন প্রয়োজন।", "Full customization and request submission require VIP PIN clearance.")}</p>
+              </div>
             </div>
-            <a href="#vip-gate" className="bn-button bn-outline bn-pin-jump">
+            <button type="button" className="bn-button bn-outline bn-pin-jump" onClick={() => setPinModalOpen(true)}>
               <KeyRound size={14} /> {t("পিন দিন (565087)", "Enter PIN (565087)")}
-            </a>
+            </button>
           </div>
         )}
         <BNPOrderStudio lang={lang} step={step} setStep={setStep} onLockChange={setShopLocked} motionDisabled={paused || reduced}/>
@@ -558,6 +612,55 @@ function BNPExperience() {
         <a href="#bnp-main">{t("উপরে যান", "Back to top")} ↑</a>
       </div>
     </footer>
+
+    {/* Floating Lock Quick-Bar */}
+    <div className="bn-floating-lock">
+      <button
+        type="button"
+        className={`bn-floating-lock-btn ${isVipUnlocked ? "unlocked" : "locked"}`}
+        onClick={() => isVipUnlocked ? handleRelock() : setPinModalOpen(true)}
+      >
+        {isVipUnlocked ? <Unlock size={16} /> : <Lock size={16} className="bn-pulse-icon" />}
+        <span>{isVipUnlocked ? t("ভিআইপি সক্রিয় (লক)", "VIP ACTIVE (LOCK)") : t("স্টুডিও লকড (PIN 565087)", "STUDIO LOCKED (PIN 565087)")}</span>
+      </button>
+    </div>
+
+    {/* Quick PIN Modal */}
+    {pinModalOpen && (
+      <div className="bn-pin-modal-overlay" role="dialog" aria-modal="true" aria-label={t("ভিআইপি স্টুডিও আনলক", "Unlock VIP Atelier")} onClick={() => setPinModalOpen(false)}>
+        <div className="bn-pin-modal-content" onClick={e => e.stopPropagation()}>
+          <button type="button" className="bn-pin-modal-close" onClick={() => setPinModalOpen(false)} aria-label={t("বন্ধ করুন", "Close")}>
+            <X size={20} />
+          </button>
+          <div className="bn-pin-modal-header">
+            <div className="bn-lock-circle" style={{ margin: "0 auto 12px" }}>
+              <Lock size={22} color="#ed1b2f" />
+            </div>
+            <h3>{t("ভিআইপি স্টুডিও পিন এন্ট্রি", "VIP Atelier Studio PIN")}</h3>
+            <p>{t("অ্যাডমিনের আনুষ্ঠানিক নির্দেশ সাপেক্ষে সাধারণ অর্ডার শুরু হবে। প্রি-লঞ্চ স্টুডিও আনলক করতে অনুমোদিত ৬ ডিজিটের পিন (565087) দিন।", "Public order intake is restricted pending admin clearance. Enter authorized 6-digit VIP PIN (565087) to unlock the studio.")}</p>
+          </div>
+          <form className="bn-pin-form" onSubmit={handlePinSubmit}>
+            <div className="bn-pin-input-group">
+              <KeyRound size={17} className="bn-pin-key-icon" />
+              <input
+                type="password"
+                inputMode="numeric"
+                maxLength={10}
+                autoFocus
+                placeholder={t("৬ ডিজিটের পিন (565087)", "6-digit PIN (565087)")}
+                value={pinInput}
+                onChange={e => { setPinInput(e.target.value); if (pinError) setPinError(""); }}
+                aria-label={t("ভিআইপি পিন কোড", "VIP PIN Code")}
+              />
+              <button type="submit" className="bn-button bn-pin-submit">
+                {t("আনলক করুন", "Unlock")} <ArrowRight size={16} />
+              </button>
+            </div>
+            {pinError && <p className="bn-pin-error" role="alert">{pinError}</p>}
+          </form>
+        </div>
+      </div>
+    )}
   </div></MotionConfig>;
 }
 
