@@ -75,7 +75,7 @@ function FailedContent() {
           </a>
 
           <a
-            href="/"
+            href="/bnp"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-carbon-800 hover:bg-carbon-700 text-silver-300 hover:text-white px-4 py-3 rounded-xl border border-carbon-700 text-xs font-semibold transition-colors"
           >
             <Home className="w-4 h-4" />
@@ -94,3 +94,4 @@ export default function PaymentFailedPage() {
     </Suspense>
   );
 }
+

@@ -23,7 +23,7 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-silver-400 text-xs sm:text-sm max-w-md font-sans mb-4 leading-relaxed">
-              Premium manufacturer of 0.8 mm Finish No. 8 mirror-silver steel and BRTA-compliant aluminum motorcycle and scooter plates in Bangladesh. Built for riders who demand durability, compliance, and aesthetic excellence.
+              Motorcycle and scooter plate design concepts for Bangladesh. Confirm product materials, mounting fit and current BRTA requirements before manufacturing or road use.
             </p>
             <div className="inline-block p-2.5 rounded-lg bg-carbon-900 border border-carbon-800 text-[11px] text-silver-300">
               <span className="text-white font-semibold">Founders:</span> Joy & Arash • Joy & Arash Enterprise
@@ -85,7 +85,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-[11px] text-silver-500 font-sans leading-relaxed">
-              Nationwide delivery via Pathao Courier. Orders accepted 24/7 online. WhatsApp registration paper verification active daily 9:00 AM – 10:00 PM.
+              Delivery availability, production timing and document verification must be confirmed. Online payment and paid dispatch are not enabled.
             </p>
           </div>
         </div>
@@ -93,7 +93,7 @@ export default function Footer() {
         <div className="mb-8 border-t border-carbon-800 pt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-[11px] text-silver-500">
           <span className="uppercase tracking-[0.2em]">Technology & infrastructure</span>
           <div className="flex flex-wrap gap-5">
-            <a href="https://lorapok.tech" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Crafted with Lorapok Labs</a>
+            <a href="https://lorapok.tech" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Ecommerce platform by Lorapok Labs</a>
             <a href="https://lorahost.lorapok.tech" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Infrastructure by LoraHost</a>
           </div>
         </div>
@@ -102,11 +102,11 @@ export default function Footer() {
           <div>
             © {new Date().getFullYear()} BNP: Bike Number Plate. A Joy & Arash Enterprise Venture. All rights reserved.
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-3">
             <a href="#designer" className="hover:text-silver-400">Designer</a>
             <a href="#pricing" className="hover:text-silver-400">Pricing</a>
             <a href="#order" className="hover:text-silver-400">Order Form</a>
-            <a href="#payment" className="hover:text-silver-400">Payment Gateway</a>
+            <a href="#payment" className="hover:text-silver-400">Payment Status</a>
             <a href="/admin/login" className="hover:text-silver-400">Admin Portal</a>
           </div>
         </div>
@@ -114,3 +114,4 @@ export default function Footer() {
     </footer>
   );
 }
+

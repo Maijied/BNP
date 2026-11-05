@@ -6,3 +6,4 @@ CREATE TABLE IF NOT EXISTS admin_login_attempts (
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 CREATE INDEX IF NOT EXISTS idx_admin_login_window ON admin_login_attempts(window_start);
+

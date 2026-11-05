@@ -7,7 +7,7 @@ interface UrgencyBarProps {
 }
 
 export default function UrgencyBar({
-  urgencyText = "BRTA deadline: November 15 — order your compliant plate today",
+  urgencyText = "Check current BRTA requirements before manufacturing or road use",
   hotline = "01632333221",
 }: UrgencyBarProps) {
   return (
@@ -18,9 +18,9 @@ export default function UrgencyBar({
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 text-center md:text-left">
         {/* Strategic Partnership & Sandbox Pill */}
         <div className="flex items-center flex-wrap justify-center md:justify-start gap-2">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-[11px] font-mono text-emerald-300 font-semibold shadow-sm">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            bnp.lorapok.tech • Sandbox
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-950/80 border border-amber-500/40 text-[11px] font-mono text-amber-300 font-semibold shadow-sm">
+            <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+            Preview • Payments disabled
           </span>
 
           <div className="hidden sm:inline-flex items-center gap-1.5 text-silver-300 text-[11px]">
@@ -72,3 +72,4 @@ export default function UrgencyBar({
     </aside>
   );
 }
+

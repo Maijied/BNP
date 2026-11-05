@@ -297,3 +297,4 @@ export function parseAndFormatPlate(input: string): ParsedPlate {
     modelBLine2,
   };
 }
+

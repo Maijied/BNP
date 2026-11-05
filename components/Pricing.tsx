@@ -1,17 +1,27 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Check, Sparkles, MessageCircle, ArrowRight, ShieldCheck, Zap } from "lucide-react";
 import { useStorefront } from "@/components/StorefrontContext";
+import { modelPriceMinor, formatBdtMinor } from "@/lib/storefront-catalog.mjs";
 
 export default function Pricing() {
   const { setModel } = useStorefront();
+  const [prices, setPrices] = useState<{ A: number | null; B: number | null }>({ A: null, B: null });
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/catalog", { signal: controller.signal, cache: "no-store" })
+      .then(response => { if (!response.ok) throw new Error("Catalog unavailable"); return response.json(); })
+      .then(catalog => setPrices({ A: modelPriceMinor(catalog, "A"), B: modelPriceMinor(catalog, "B") }))
+      .catch(() => { /* Unavailable catalog must not become an advertised fixed price. */ });
+    return () => controller.abort();
+  }, []);
 
   const handleSelectModel = (m: "A" | "B") => {
     setModel(m);
     const element = document.getElementById("order");
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+      element.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
     }
   };
 
@@ -24,10 +34,10 @@ export default function Pricing() {
             <span>Transparent Pricing & Specifications</span>
           </div>
           <h2 className="text-2xl sm:text-4xl font-display font-extrabold text-white tracking-tight">
-            Retail & Wholesale Pricing
+            Models & Catalog Pricing
           </h2>
           <p className="mt-3 text-silver-400 text-sm sm:text-base font-sans">
-            Direct from manufacturer. No middleman markups. Full advance payment powered by the LoraHost Payment Gateway.
+            Prices appear from the connected product catalog when available. Final totals require server confirmation. Online payment is not enabled.
           </p>
         </div>
 
@@ -44,14 +54,14 @@ export default function Pricing() {
               </div>
               <h3 className="text-xl font-bold text-white mb-2">Standard Motorcycle Plate</h3>
               <p className="text-xs text-silver-400 mb-6 font-sans">
-                Single-line mirror silver steel plate. Perfect for all standard motorbikes.
+                Single-line plate concept. Check mounting position, dimensions and material before manufacture.
               </p>
 
               <div className="flex items-baseline gap-2 mb-6">
-                <span className="text-4xl font-extrabold text-white font-display">৳ 380</span>
+                <span className="text-4xl font-extrabold text-white font-display">{formatBdtMinor(prices.A)}</span>
                 <span className="text-xs text-silver-500 font-sans">BDT / piece</span>
                 <span className="ml-auto text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                  Pre-order: ৳ 300
+                  {prices.A === null ? "Catalog unavailable" : "Catalog price"}
                 </span>
               </div>
 
@@ -62,7 +72,7 @@ export default function Pricing() {
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-bnp shrink-0" />
-                  <span>BRTA 285×50 mm exact dimension</span>
+                  <span>285×50 mm preview; verify current requirements</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-bnp shrink-0" />
@@ -74,7 +84,7 @@ export default function Pricing() {
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-bnp shrink-0" />
-                  <span>Dealer wholesale rate: <strong>৳ 250</strong> (min 50 pcs)</span>
+                  <span>Bulk pricing requires a separate confirmed quotation</span>
                 </li>
               </ul>
             </div>
@@ -91,7 +101,7 @@ export default function Pricing() {
           {/* Model B Card */}
           <div className="relative bg-carbon-900 rounded-2xl border border-carbon-700/80 p-8 shadow-glass-panel hover:border-carbon-600 transition-all flex flex-col justify-between">
             <div className="absolute -top-3.5 right-6 px-3 py-1 rounded-full bg-gradient-to-r from-gold to-yellow-600 text-carbon-950 text-[11px] font-extrabold uppercase tracking-wider shadow-md">
-              Scooter Standard
+              Scooter Preview
             </div>
 
             <div>
@@ -103,14 +113,14 @@ export default function Pricing() {
               </div>
               <h3 className="text-xl font-bold text-white mb-2">Scooter Stacked Plate</h3>
               <p className="text-xs text-silver-400 mb-6 font-sans">
-                Two-line stacked mirror silver steel plate designed specifically for modern scooters.
+                Two-line plate concept. Model-specific fitting and manufacturing approval are required.
               </p>
 
               <div className="flex items-baseline gap-2 mb-6">
-                <span className="text-4xl font-extrabold text-white font-display">৳ 450</span>
+                <span className="text-4xl font-extrabold text-white font-display">{formatBdtMinor(prices.B)}</span>
                 <span className="text-xs text-silver-500 font-sans">BDT / piece</span>
                 <span className="ml-auto text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                  Pre-order: ৳ 380
+                  {prices.B === null ? "Catalog unavailable" : "Catalog price"}
                 </span>
               </div>
 
@@ -121,7 +131,7 @@ export default function Pricing() {
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-bnp shrink-0" />
-                  <span>BRTA 200×100 mm stacked format</span>
+                  <span>200×100 mm preview; verify current requirements</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-bnp shrink-0" />
@@ -129,11 +139,11 @@ export default function Pricing() {
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-bnp shrink-0" />
-                  <span>Vibration & road-gravel resistant</span>
+                  <span>Mounting and durability review required</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-bnp shrink-0" />
-                  <span>Dealer wholesale rate: <strong>৳ 320</strong> (min 50 pcs)</span>
+                  <span>Bulk pricing requires a separate confirmed quotation</span>
                 </li>
               </ul>
             </div>
@@ -155,12 +165,12 @@ export default function Pricing() {
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-white font-semibold block text-sm">Powered by LoraHost Payment Gateway</span>
-              <span>Encrypted SHA-256 HMAC PayStation relay with automated instant verification.</span>
+              <span className="text-white font-semibold block text-sm">Online payment is deferred</span>
+              <span>Catalog and order preparation can be reviewed without charging a payment method.</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 shrink-0">
+          <div className="flex flex-wrap justify-center items-center gap-4">
             <a
               href="https://lorahost.lorapok.tech"
               target="_blank"
@@ -184,3 +194,4 @@ export default function Pricing() {
     </section>
   );
 }
+

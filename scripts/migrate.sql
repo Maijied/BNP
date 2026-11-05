@@ -60,3 +60,4 @@ INSERT INTO settings (k, v) VALUES
   ('whatsapp', '01914-873925'),
   ('bridge_enabled', 'true')
 ON DUPLICATE KEY UPDATE k=k;
+

@@ -27,7 +27,17 @@ The new admin Pages Functions and D1-backed order view are proposed in PR #23. A
 - Explicit approval of public checkout and staged production cutover.
 
 ## Creative pipeline
-Adobe Firefly hero art and HeyGen 5-second 1080p conceptual motion have been created outside the GitHub repo. They require licensing/rights and visual QA, compression/optimized formats, source permanence, reduced-motion fallback, performance testing, responsive review and approved asset ingestion before use in a public site. Do not hardcode time-limited export links. Higgsfield video generation was blocked by plan entitlement and Canva design creation was blocked by team administrator settings. Preserve BNP as primary brand and Lorapok Labs as quiet footer credit.
+Adobe Firefly hero art and HeyGen 5-second 1080p conceptual motion have been created outside the GitHub repo. They require licensing/rights and visual QA, compression/optimized formats, source permanence, reduced-motion fallback, performance testing, responsive review and approved asset ingestion before use in a public site. Do not hardcode time-limited export links. Higgsfield video generation was blocked by plan entitlement and Canva design creation was blocked by team administrator settings. Keep BNP as the storefront identity and identify both the ecommerce platform and independent Courier API as Lorapok Labs products. Do not substitute an unreviewed mascot for the established brand mark.
 
 ## Release security note
 Cloudflare environment values can be changed without code review; run the same staging review when changing secrets, D1 bindings or routes. Admin settings are currently read-only because changes are not persisted into the server-side order price path. Never present sample orders, mock payment receipts or an admin-modified payment status as real transactions.
+
+
+## Pathao draft integration
+See [PATHAO_INTEGRATION.md](PATHAO_INTEGRATION.md) for the prepaid courier implementation and owner setup. Apply staging migrations `0003_pathao_shipments.sql`, `0004_pathao_scope_webhooks.sql` and `0005_pathao_store_requests.sql` in order after the previous migrations. The BNP orders DB must remain single merchant/product. The independent Lorapok Labs Courier API uses a separate database and migrations, encrypted token persistence, operation claims, encrypted callback admission and read-only tracking reconciliation. Delivery-event interpretation and automatic reward ingestion remain blocked pending confirmed contracts; callbacks never alter payment or fulfillment. Hosting/provisioning/deployment and browser acceptance are still required. Checkout, settlement and real dispatch remain blocked until the payment and provider-contract gates pass. Never backfill settlement proof from paid flags.
+
+## Parent API non-payment phase
+
+The current default commerce path is the separate [Lorapok Labs Platform API](LORAPOK_PLATFORM_API.md), not the legacy BNP order tables. It owns scoped/versioned catalog, exact-price unpaid request snapshots and review/cancellation. Payment gateway integration is deliberately deferred; payment capture, production, QC and paid dispatch cannot be enabled by ordinary flags. Catalog edits and unpaid intake require separate least-privilege server clients. No existing production data was migrated.
+
+Before any future release, validate the final combined frontend/API build in a browser, provision the independent databases and client keys with approval, confirm ownership/routing and retention, enforce platform rate limits, and reconcile any legacy data. A local mock or public source change does not deploy a service. Publishing remains unapproved; do not infer approval from requests for further local architecture work.

@@ -6,3 +6,4 @@ export async function onRequestGet() {
     headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
   });
 }
+

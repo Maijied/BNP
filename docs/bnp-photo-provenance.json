@@ -1,0 +1,26 @@
+[
+  {
+    "source_filename": "1000086193(1).jpg",
+    "destination": "rider-portrait.jpg",
+    "sha256": "0f626cce3d8f4f8905b0c70f410760a9b585649cc733162314e745fcde911ea6",
+    "transformation": "None. Original bytes; responsive display only."
+  },
+  {
+    "source_filename": "1000086215(1).jpg",
+    "destination": "rider-studio.jpg",
+    "sha256": "08c9bf4ed1c62e54dc6aa4e8a2c9e0ae44d680e0c6a436988ecb00ed80d9d171",
+    "transformation": "None. Original bytes; responsive display only."
+  },
+  {
+    "source_filename": "1000086224(1).jpg",
+    "destination": "rider-night.jpg",
+    "sha256": "4f4cf7562de7c80daa3e9df907a9ca580c62e975414a1d5bed6c9005cc1e5016",
+    "transformation": "None. Original bytes; responsive display only."
+  },
+  {
+    "source_filename": "1000086212(1).jpg",
+    "destination": "plate-fit-source.jpg",
+    "sha256": "47ab136108306a1231d0c53b9f38503646ef9b1ba5cead23136211d39932d5ab",
+    "transformation": "None. Original bytes. The mounted preview draws live SVG lettering above the photograph; photo-space perspective and responsive framing only."
+  }
+]

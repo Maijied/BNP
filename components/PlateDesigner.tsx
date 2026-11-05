@@ -105,16 +105,17 @@ export default function PlateDesigner() {
             Design Your Custom Plate
           </h2>
           <p className="mt-3 text-silver-400 text-sm sm:text-base font-sans max-w-2xl mx-auto">
-            Type in English or Bangla. Our AI-assisted phonetics instantly maps registration codes to legal BRTA typography with stamped metallic reflections.
+            Type in English or Bangla to preview your registration text. Check every character against your documents; this visual preview does not certify road compliance.
           </p>
         </div>
 
         {/* Model Switcher */}
         <div className="flex justify-center mb-10">
-          <div className="inline-flex p-1.5 bg-carbon-850 rounded-2xl border border-carbon-700/80 shadow-glass-panel">
+          <div className="inline-flex w-full sm:w-auto flex-col sm:flex-row p-1.5 bg-carbon-850 rounded-2xl border border-carbon-700/80 shadow-glass-panel">
             <button
               type="button"
               onClick={() => setModel("A")}
+              aria-pressed={model === "A"}
               className={`flex items-center gap-2.5 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 ${
                 model === "A"
                   ? "bg-gradient-to-r from-bnp to-bnp-hover text-white shadow-bnp-glow"
@@ -123,12 +124,13 @@ export default function PlateDesigner() {
             >
               <span>Model A — Motorcycle (285×50 mm)</span>
               <span className="text-[10px] bg-black/40 px-2 py-0.5 rounded font-mono font-bold">
-                ৳ 380
+                Preview
               </span>
             </button>
             <button
               type="button"
               onClick={() => setModel("B")}
+              aria-pressed={model === "B"}
               className={`flex items-center gap-2.5 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 ${
                 model === "B"
                   ? "bg-gradient-to-r from-bnp to-bnp-hover text-white shadow-bnp-glow"
@@ -137,7 +139,7 @@ export default function PlateDesigner() {
             >
               <span>Model B — Scooter (200×100 mm)</span>
               <span className="text-[10px] bg-black/40 px-2 py-0.5 rounded font-mono font-bold">
-                ৳ 450
+                Preview
               </span>
             </button>
           </div>
@@ -169,7 +171,7 @@ export default function PlateDesigner() {
 
             <div className="border-t border-carbon-700/60 pt-5 space-y-4">
               <span className="text-[11px] font-mono uppercase text-silver-500 tracking-wider block">
-                Structured BRTA Fields
+                Registration Fields
               </span>
 
               {/* District Select / Input */}
@@ -354,8 +356,8 @@ export default function PlateDesigner() {
                 <span>Laser Cut Slots</span>
               </div>
               <div className="p-2.5 rounded-xl bg-carbon-800/50 border border-carbon-700/50">
-                <span className="block text-white font-bold font-mono">300 DPI</span>
-                <span>BRTA Compliance</span>
+                <span className="block text-white font-bold font-mono">Preview only</span>
+                <span>Requirements to verify</span>
               </div>
             </div>
           </div>
@@ -364,3 +366,4 @@ export default function PlateDesigner() {
     </section>
   );
 }
+

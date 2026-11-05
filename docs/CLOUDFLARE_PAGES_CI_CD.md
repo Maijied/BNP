@@ -21,3 +21,4 @@ Merge the CI workflow PR to `main` only after confirming project and environment
 
 ## Security
 Do not add Cloudflare API tokens to source files or pull-request comments. Do not merge draft payment PRs to force a visual website update. This workflow alone does not configure D1 or LoraHost.
+

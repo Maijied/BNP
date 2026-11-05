@@ -123,3 +123,4 @@ Recommended media:
 ## 11. Reference inspiration
 - F1 website redesign emphasizes improved navigation, personalized experiences and mobile-first story/video: https://www.formula1.com/en/latest/article/formula-1-launches-new-website-and-personalised-mobile-app.1knZbPSCZ2tS2z6ADRn2Gs
 - Official F1 ecommerce merchandising example (inspiration only, do not copy trade dress): https://usf1store.formula1.com/en/
+

@@ -1,0 +1,10 @@
+{
+  "name": "@lorapok/platform-api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Lorapok Labs tenant-scoped commerce and courier API. Payment gateway deferred.",
+  "engines": { "node": ">=22" },
+  "scripts": { "start": "node src/server.js" },
+  "exports": { ".": "./src/worker.js", "./client": "./src/client.js" }
+}

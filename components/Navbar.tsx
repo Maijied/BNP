@@ -16,14 +16,14 @@ export default function Navbar({ hotline = "01632333221" }: NavbarProps) {
               BNP
             </div>
             <div className="flex flex-col">
-              <span className="font-display font-bold text-sm sm:text-base tracking-tight text-white flex items-center gap-1.5">
+              <span className="font-display font-bold text-sm sm:text-base tracking-tight text-white flex items-center gap-1.5 whitespace-nowrap">
                 Bike Number Plate
-                <span className="text-[10px] uppercase font-semibold px-1.5 py-0.2 bg-carbon-700 text-silver-300 rounded border border-carbon-600">
+                <span className="hidden sm:inline-block text-[10px] uppercase font-semibold px-1.5 py-0.2 bg-carbon-700 text-silver-300 rounded border border-carbon-600">
                   0.8mm
                 </span>
               </span>
               <span className="text-[10px] sm:text-xs text-silver-500 font-medium tracking-wide">
-                A Joy & Arash Enterprise Venture
+                Ecommerce by Lorapok Labs
               </span>
             </div>
           </a>
@@ -48,7 +48,7 @@ export default function Navbar({ hotline = "01632333221" }: NavbarProps) {
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-carbon-800 hover:bg-carbon-750 text-emerald-300 font-semibold border border-carbon-700 hover:border-emerald-500/50 transition-colors"
-              title="LoraHost Sovereign Cloud & Payment Infrastructure"
+              title="LoraHost Infrastructure"
             >
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
               LoraHost
@@ -69,7 +69,7 @@ export default function Navbar({ hotline = "01632333221" }: NavbarProps) {
             Order Form
           </a>
           <a href="#payment" className="hover:text-silver-100 transition-colors">
-            LoraHost Gateway
+            Payment Status
           </a>
           <a href="#faq" className="hover:text-silver-100 transition-colors">
             FAQ
@@ -90,7 +90,7 @@ export default function Navbar({ hotline = "01632333221" }: NavbarProps) {
             href="#designer"
             className="inline-flex items-center gap-2 bg-gradient-to-r from-bnp to-bnp-hover hover:from-bnp-hover hover:to-bnp text-white text-xs sm:text-sm font-semibold px-4 py-2 rounded-lg shadow-bnp-glow hover:shadow-lg transition-all duration-200 border border-red-400/30 active:scale-95"
           >
-            <Sparkles className="w-3.5 h-3.5" />
+            <Sparkles className="hidden sm:block w-3.5 h-3.5" />
             <span>Order Plate</span>
           </a>
         </div>
@@ -98,3 +98,4 @@ export default function Navbar({ hotline = "01632333221" }: NavbarProps) {
     </header>
   );
 }
+

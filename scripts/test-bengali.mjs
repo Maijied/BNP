@@ -54,3 +54,4 @@ for (const tc of testCases) {
 }
 
 console.log(`\nAll ${passed} test cases passed successfully!`);
+
