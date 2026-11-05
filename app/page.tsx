@@ -16,7 +16,7 @@ export default function Home() {
       <main className="min-h-screen flex flex-col bg-carbon-900 text-silver-200">
         {/* 1. Urgency Banner */}
         <UrgencyBar
-          urgencyText="BRTA deadline: November 15 — order your compliant plate today"
+          urgencyText="Front plate requirements are changing — check current BRTA specifications before ordering"
           hotline="01632333221"
         />
 
