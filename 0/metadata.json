@@ -1,0 +1,43 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6PG2NRP3PN70HTVBQPNDG9C",
+  "session_id": "ca1aa4d1-faca-479d-971f-d07d3e8fd803",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-05T18:38:29.999295568Z",
+  "branch": "feat/prelaunch-vip-pin-timer",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "app/bnp.css",
+    "app/page.tsx",
+    "components/BNPStorefront.tsx"
+  ],
+  "agent": "Antigravity",
+  "model": "gemini-3.8-flash-high",
+  "turn_id": "52b840f7141b",
+  "checkpoint_transcript_start": 288,
+  "transcript_lines_at_start": 288,
+  "token_usage": {
+    "input_tokens": 200419,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 39048178,
+    "output_tokens": 59704,
+    "api_call_count": 292
+  },
+  "redaction": {
+    "replacements": 49,
+    "layers": {
+      "betterleaks": 4,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 7,
+      "credentialed_uri": 0,
+      "entropy": 49,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 2
+  }
+}
