@@ -161,7 +161,7 @@ export async function insertOrder(order: Omit<OrderRecord, "id" | "created_at">)
 
     return {
       ...order,
-      id: result.insertId,
+      id: String(result.insertId),
       created_at: now,
     };
   }
@@ -170,7 +170,7 @@ export async function insertOrder(order: Omit<OrderRecord, "id" | "created_at">)
   const id = memStore.orders.size + 1;
   const record: OrderRecord = {
     ...order,
-    id,
+    id: String(id),
     created_at: now,
   };
   memStore.orders.set(order.order_number, record);
