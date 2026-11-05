@@ -248,3 +248,4 @@ The live storefront and sandbox portal is hosted on **Cloudflare Pages** under `
   - `functions/api/admin/*`: Lightweight edge admin authentication and management endpoints.
 - **Continuous Deployment**: Automated build on GitHub push via `npm run build` with `destination_dir: "out"`.
 
+

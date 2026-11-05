@@ -1,7 +1,7 @@
 import React from "react";
 import { ShieldCheck, Award, ArrowRight, Zap, CheckCircle2, Sparkles, ExternalLink, Globe } from "lucide-react";
 
-export default function Hero() {
+export default function Hero({ designTarget = "#designer" }: { designTarget?: "#designer" | "#collection" }) {
   return (
     <section className="bnp-cinematic-hero group/hero relative isolate overflow-hidden pt-16 pb-20 lg:pt-28 lg:pb-32 border-b border-carbon-700/50 bg-carbon-gradient">
       {/* Cinematic motion layers are decorative and honor reduced-motion preferences. */}
@@ -25,12 +25,12 @@ export default function Hero() {
                 <Award className="w-3.5 h-3.5 text-gold" />
                 <span>A Joy & Arash Enterprise Venture</span>
                 <span className="h-1 w-1 rounded-full bg-silver-500" />
-                <span className="text-bnp font-semibold">Finish No. 8</span>
+                <span className="text-bnp font-semibold">Classic Carbon</span>
               </div>
 
               <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-950/70 border border-emerald-500/30 text-emerald-300 text-xs font-mono font-medium shadow-sm">
                 <Globe className="w-3 h-3 text-emerald-400" />
-                <span>bnp.lorapok.tech</span>
+                <span>BNP · Plate Studio</span>
               </div>
             </div>
 
@@ -42,9 +42,9 @@ export default function Hero() {
             </h1>
 
             <p className="text-base sm:text-lg text-silver-400 max-w-2xl mb-4 font-sans leading-relaxed">
-              <strong className="text-white font-semibold">Premium Quality. Durable. Distinctive.</strong> 
-              Engineered with laser-cut <span className="text-silver-200">0.8 mm mirror-finish stainless steel</span> and 
-              front-plate manufacturing options. Built to outlast Bangladesh weather, dust, and daily commutes.
+              <strong className="text-white font-semibold">Personalized design. Distinctive detail.</strong>
+              Explore a <span className="text-silver-200">mirror-silver visual treatment</span> and
+              front-plate design options. Confirm the final material, fit and current requirements before manufacturing.
             </p>
 
             {/* Brand storytelling stays customer-first; partner credit belongs in the footer. */}
@@ -58,34 +58,34 @@ export default function Hero() {
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full max-w-lg mb-8 text-xs sm:text-sm text-silver-300">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-bnp shrink-0" />
-                <span>0.8 mm Steel Gauge</span>
+                <span>Material to be confirmed</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-bnp shrink-0" />
-                <span>Rust & Weather Proof</span>
+                <span>Live lettering preview</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-bnp shrink-0" />
-                <span>Model-specific sizing</span>
+                <span>Illustrative dimensions</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-bnp shrink-0" />
-                <span>Pathao Fast Delivery</span>
+                <span>Delivery quote required</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-bnp shrink-0" />
-                <span>Laser Cut Slots</span>
+                <span>Mounting review required</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-bnp shrink-0" />
-                <span>WhatsApp Paper Check</span>
+                <span>Document upload disabled</span>
               </div>
             </div>
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
               <a
-                href="#designer"
+                href={designTarget}
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-bnp to-bnp-hover hover:from-bnp-hover hover:to-bnp text-white font-semibold px-6 py-3.5 rounded-xl shadow-bnp-glow transition-all duration-200 border border-red-500/30 text-sm sm:text-base group"
               >
                 <span>Design Your Plate Now</span>
@@ -93,7 +93,7 @@ export default function Hero() {
               </a>
 
               <a
-                href="#pricing"
+                href={designTarget === "#collection" ? "#collection" : "#pricing"}
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-carbon-800 hover:bg-carbon-700 text-silver-200 font-semibold px-6 py-3.5 rounded-xl border border-carbon-600 transition-all text-sm sm:text-base"
               >
                 <span>View Models & Pricing</span>
@@ -107,7 +107,7 @@ export default function Hero() {
               {/* Highlight Tag */}
               <div className="flex items-center justify-between mb-6">
                 <span className="text-xs font-mono font-semibold uppercase tracking-wider text-silver-400 flex items-center gap-1.5">
-                  <Zap className="w-3.5 h-3.5 text-bnp" /> Live Specimen
+                  <Zap className="w-3.5 h-3.5 text-bnp" /> Design preview
                 </span>
                 <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
                   Sample plate preview
@@ -135,23 +135,23 @@ export default function Hero() {
               <div className="space-y-2.5 border-t border-carbon-800 pt-5 text-xs text-silver-400">
                 <div className="flex justify-between">
                   <span>Material:</span>
-                  <span className="text-white font-medium">0.8mm Stainless Steel</span>
+                  <span className="text-white font-medium">To be confirmed</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Finish:</span>
-                  <span className="text-white font-medium">Finish No. 8 Mirror Silver</span>
+                  <span className="text-white font-medium">Illustrative mirror silver</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Standard Model A:</span>
+                  <span>Preview Model A:</span>
                   <span className="text-white font-mono">285 × 50 mm (Motorcycle)</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Standard Model B:</span>
+                  <span>Preview Model B:</span>
                   <span className="text-white font-mono">200 × 100 mm (Scooter)</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Payment Gateway:</span>
-                  <span className="text-emerald-400 font-semibold">LoraHost (bKash/Nagad/Cards)</span>
+                  <span>Online payment:</span>
+                  <span className="text-amber-300 font-semibold">Not available in this preview</span>
                 </div>
               </div>
 
@@ -167,3 +167,4 @@ export default function Hero() {
     </section>
   );
 }
+

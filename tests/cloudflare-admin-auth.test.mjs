@@ -46,3 +46,4 @@ test("session cookie is HttpOnly Secure Strict and time bounded", async () => {
   }
   assert.ok(auth.clearSessionCookie().includes("Max-Age=0"));
 });
+

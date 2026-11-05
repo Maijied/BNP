@@ -1,6 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Hind_Siliguri, Sora } from "next/font/google";
+import { configuredSiteOrigin } from "@/lib/site-origin.mjs";
 import "./globals.css";
+import "./experiences.css";
+import "./bnp.css";
+import "./vintage.css";
 
 const hindSiliguri = Hind_Siliguri({
   subsets: ["bengali", "latin"],
@@ -16,6 +20,8 @@ const sora = Sora({
   display: "swap",
 });
 
+const siteOrigin = configuredSiteOrigin(process.env.NEXT_PUBLIC_SITE_URL);
+
 export const viewport: Viewport = {
   themeColor: "#0B0B0C",
   width: "device-width",
@@ -24,38 +30,25 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://bnp.lorapok.tech"),
-  title: "BNP: Bike Number Plate — Mirror Silver Steel Plates | Lorapok Labs & LoraHost",
-  description:
-    "Order luxury laser-cut 0.8 mm Finish No. 8 mirror-silver stainless steel and BRTA-compliant aluminum motorcycle and scooter plates in Bangladesh. A Joy & Arash Enterprise Venture in strategic partnership with Lorapok Labs and LoraHost. Live at bnp.lorapok.tech.",
-  keywords: [
-    "Bike Number Plate",
-    "BNP",
-    "Motorcycle Number Plate Bangladesh",
-    "Scooter Number Plate",
-    "Mirror Silver Steel Plate",
-    "BRTA Compliant Number Plate",
-    "Joy & Arash Enterprise",
-    "Lorapok Labs",
-    "LoraHost",
-    "bnp.lorapok.tech",
-  ],
-  authors: [{ name: "Joy & Arash Enterprise" }, { name: "Lorapok Labs" }, { name: "LoraHost" }],
-  creator: "Lorapok Labs & Joy & Arash Enterprise",
+  metadataBase: siteOrigin,
+  robots: { index: false, follow: false },
+  title: "Vintage plate atelier | Decorative nameplates",
+  description: "Explore vintage-inspired decorative nameplates from Lorapok Labs. Preview personal lettering and sample requests. Working name; no live payments.",
+  authors: [{ name: "Lorapok Labs" }],
+  creator: "Lorapok Labs",
   publisher: "Lorapok Labs",
   openGraph: {
-    title: "BNP: Bike Number Plate — Mirror Silver Steel Plates | Lorapok Labs & LoraHost",
-    description:
-      "Laser-cut 0.8 mm Finish No. 8 mirror silver steel plates. Built to outlast your ride. BRTA compliance deadline Nov 15. Powered exclusively by LoraHost Payment Gateway.",
-    url: "https://bnp.lorapok.tech",
-    siteName: "BNP: Bike Number Plate",
-    locale: "bn_BD",
+    title: "Vintage plate atelier | Decorative nameplates",
+    description: "Vintage-inspired decorative nameplate concepts and personal lettering. A distinct Lorapok Labs shop preview.",
+    url: siteOrigin?.href,
+    siteName: "Vintage plate atelier · Working name",
+    locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "BNP — Bike Number Plate",
-    description: "Premium Quality | Durable | Stylish. A Joy & Arash Enterprise Venture in Strategic Partnership with Lorapok Labs & LoraHost.",
+    title: "Vintage plate atelier | Decorative nameplates",
+    description: "An independent Lorapok Labs project. Local preview, no live transactions.",
   },
 };
 
@@ -65,10 +58,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="bn" className={`${hindSiliguri.variable} ${sora.variable}`}>
+    <html lang="en" className={`${hindSiliguri.variable} ${sora.variable}`}>
       <body className="min-h-screen bg-carbon-900 text-silver-200 antialiased font-sans selection:bg-bnp selection:text-white">
         {children}
       </body>
     </html>
   );
 }
+

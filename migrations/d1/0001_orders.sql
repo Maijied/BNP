@@ -68,3 +68,4 @@ CREATE TABLE IF NOT EXISTS production_jobs (
 );
 -- IMPORTANT: schema only. No order may be marked paid without a verified, deduplicated
 -- bridge event AND matching amount/currency/reference, in a single transaction.
+

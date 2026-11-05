@@ -50,3 +50,4 @@ export async function onRequestPost({ request, env }) {
   response.headers.set("Set-Cookie", sessionCookie(token));
   return response;
 }
+

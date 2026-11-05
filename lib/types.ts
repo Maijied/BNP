@@ -62,3 +62,4 @@ export interface StoreSettings {
   hotline: string;
   whatsapp: string;
 }
+

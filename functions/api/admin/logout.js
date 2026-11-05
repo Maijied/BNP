@@ -6,3 +6,4 @@ export async function onRequestPost({ request }) {
   response.headers.set("Set-Cookie", clearSessionCookie());
   return response;
 }
+

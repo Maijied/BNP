@@ -80,3 +80,4 @@ export function sessionCookie(token) {
 export function clearSessionCookie() {
   return `${SESSION_COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0`;
 }
+

@@ -9,30 +9,12 @@ interface FAQItem {
 }
 
 const FAQS: FAQItem[] = [
-  {
-    q: "Are these plates legally compliant with BRTA regulations?",
-    a: "Yes. Our Model A (285×50 mm) and Model B (200×100 mm) plates adhere strictly to BRTA physical dimension specifications and font ratios. We also provide compliant 0.7 mm aluminum front plates, with rear plates engineered in mirror-finish 0.8 mm stainless steel.",
-  },
-  {
-    q: "Why must I send my registration certificate via WhatsApp?",
-    a: "Because our plates are custom stamped and laser cut with your legal registration number. To eliminate fraudulent number generation and typographical errors, production starts only after we verify the photo of your blue book / digital registration card on WhatsApp (01914-873925).",
-  },
-  {
-    q: "How long does delivery take?",
-    a: "Once your registration document is verified on WhatsApp, plates are manufactured within 24 hours. Delivery via Pathao Courier takes 24–48 hours inside Dhaka and 48–72 hours anywhere across Bangladesh.",
-  },
-  {
-    q: "Will the mirror-silver steel rust or fade over time?",
-    a: "No. We utilize heavy-gauge 0.8 mm Finish No. 8 mirror-polished stainless steel. It is 100% rust-proof, scratch-resistant, and maintains its mirror sheen even in heavy rain, mud, and highway dust.",
-  },
-  {
-    q: "Do I need the mounting bracket and bolt kit?",
-    a: "Our plates feature standard 2 × 12 × 5.5 mm slots that fit most factory bike tail mounts. If your bike has non-standard tail holes or you want vibration-absorbing stainless hardware, we recommend adding our +80 BDT mounting clamp kit.",
-  },
-  {
-    q: "How do I place a bulk B2B order for my workshop?",
-    a: "For workshops, dealerships, and bike accessories shops ordering 10+ plates, we offer wholesale rates ranging from ৳ 65 to ৳ 80 per piece. Contact our B2B desk directly on WhatsApp at 01914-873925.",
-  },
+  { q: "Are these previews approved for road use?", a: "No. A preview does not certify compliance. Confirm current BRTA specifications, lettering, material and mounting requirements before manufacture. Decorative designs are not road-use approvals, and must not replace an official rear RFID plate." },
+  { q: "Should I upload registration documents here?", a: "No document upload is enabled in this preview. Confirm the necessary information, recipient and secure verification process before sharing registration documents." },
+  { q: "How long does delivery take?", a: "Production timing, courier coverage and delivery charges require a confirmed quotation. This preview does not promise a delivery date or create a paid shipment." },
+  { q: "What materials and finish are available?", a: "Mirror-finish steel is shown as a design option. The workshop must confirm final material, thickness, finish, care instructions and any warranty before manufacture." },
+  { q: "Do I need mounting hardware?", a: "Mounting depends on your scooter or motorcycle. Confirm the hole positions and bracket compatibility with the workshop; preview dimensions are not a fit guarantee." },
+  { q: "Can I place a bulk order or pay online?", a: "Bulk pricing requires a separate quotation. Online payments are deferred and disabled. Do not send money based on this preview; any draft order remains unpaid." },
 ];
 
 export default function FAQ() {
@@ -86,3 +68,4 @@ export default function FAQ() {
     </section>
   );
 }
+

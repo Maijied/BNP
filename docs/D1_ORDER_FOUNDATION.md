@@ -17,3 +17,4 @@ Registration numbers and customer address/phone are sensitive. Avoid placing the
 
 ## Out of scope
 This migration does not wire payment webhooks, create a Cloudflare database, configure credentials, or deploy production. The schema is a foundation for the next implementation PR.
+

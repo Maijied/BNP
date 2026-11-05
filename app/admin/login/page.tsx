@@ -56,7 +56,7 @@ function LoginContent() {
             Operations & Admin Portal
           </h1>
           <p className="text-xs text-silver-400 mt-1 font-sans">
-            A Joy & Arash Enterprise Venture • Powered by Lorapok Labs & LoraHost
+            BNP · A Lorapok Labs product
           </p>
         </div>
 
@@ -122,7 +122,7 @@ function LoginContent() {
         </form>
 
         <div className="mt-8 pt-6 border-t border-carbon-800 text-center">
-          <a href="/" className="text-xs text-silver-500 hover:text-white transition-colors">
+          <a href="/bnp" className="text-xs text-silver-500 hover:text-white transition-colors">
             ← Back to Storefront
           </a>
         </div>
@@ -138,3 +138,4 @@ export default function AdminLoginPage() {
     </Suspense>
   );
 }
+

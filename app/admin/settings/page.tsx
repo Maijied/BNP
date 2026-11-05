@@ -1,256 +1,30 @@
 "use client";
-
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { Sliders, Save, ArrowLeft, Check, AlertCircle, Loader2 } from "lucide-react";
-
+import React, { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import AdminHeader from '@/components/AdminHeader';
+import PathaoRewardsPanel from '@/components/PathaoRewardsPanel';
+type Product = { sku: string; title: string; unit_price_minor: number; currency: string; active: boolean; kind: string; metadata: Record<string, unknown>; version: number };
+type Shipping = { code: string; label: string; price_minor: number; active: boolean; version: number };
 export default function AdminSettingsPage() {
-  const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const [readOnly, setReadOnly] = useState(true);
-  const [errorMsg, setErrorMsg] = useState("");
-
-  const [settings, setSettings] = useState({
-    price_a: 380,
-    price_b: 450,
-    price_preorder_a: 300,
-    price_preorder_b: 380,
-    bracket_price: 80,
-    delivery_dhaka: 60,
-    delivery_outside: 120,
-    urgency_text: "Check current BRTA requirements before ordering.",
-    hotline: "01632333221",
-    whatsapp: "01914-873925",
-  });
-
-  useEffect(() => {
-    fetch("/api/admin/settings")
-      .then((res) => {
-        if (res.status === 401) {
-          router.push("/admin/login");
-          return null;
-        }
-        return res.json();
-      })
-      .then((data) => {
-        if (data?.settings) {
-          setSettings(data.settings);
-          setReadOnly(Boolean(data.read_only));
-        }
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
-  }, [router]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
-    setErrorMsg("");
-    setSaved(false);
-
-    try {
-      const res = await fetch("/api/admin/settings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(settings),
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to save settings.");
-      }
-
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2500);
-    } catch (err: any) {
-      setErrorMsg(err.message || "Failed to update settings.");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-carbon-900 text-silver-200">
-      {/* Top Navbar */}
-      <header className="bg-carbon-850 border-b border-carbon-700 px-4 sm:px-8 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <a
-            href="/admin/orders"
-            className="p-1.5 rounded-lg bg-carbon-800 hover:bg-carbon-700 text-silver-300 transition-colors"
-            title="Back to Orders"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </a>
-          <div>
-            <h1 className="text-sm font-bold text-white font-display">Store Settings Configurator</h1>
-            <span className="text-[10px] text-silver-500 font-sans">Dynamic Pricing & Controls • Powered by Lorapok Labs & LoraHost</span>
-          </div>
-        </div>
-
-        <button
-          onClick={handleSubmit}
-          disabled={saving || readOnly}
-          className="inline-flex items-center gap-2 bg-bnp hover:bg-bnp-hover text-white text-xs font-semibold px-4 py-2 rounded-xl shadow-bnp-glow transition-all disabled:opacity-50"
-        >
-          {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-          <span>{saving ? "Saving..." : "Save Changes"}</span>
-        </button>
-      </header>
-
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {readOnly && <div className="mb-5 rounded-xl border border-amber-500/30 bg-amber-950/20 p-4 text-sm text-amber-200">Settings are read-only until the database-backed pricing service is linked to checkout. No changes can be saved yet.</div>}
-        {saved && (
-          <div className="mb-6 p-4 rounded-xl bg-emerald-950/60 border border-emerald-500 text-emerald-200 text-xs flex items-center gap-2">
-            <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span>Settings saved.</span>
-          </div>
-        )}
-
-        {errorMsg && (
-          <div className="mb-6 p-4 rounded-xl bg-red-950/60 border border-red-500 text-red-200 text-xs flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
-            <span>{errorMsg}</span>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Retail Pricing Section */}
-          <div className="bg-carbon-850 p-6 rounded-2xl border border-carbon-700 shadow-glass-panel">
-            <h2 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
-              <Sliders className="w-4 h-4 text-bnp" />
-              <span>Plate Pricing (BDT)</span>
-            </h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs text-silver-400 mb-1">Model A Retail MRP (৳)</label>
-                <input
-                  type="number"
-                  required
-                  value={settings.price_a}
-                  onChange={(e) => setSettings({ ...settings, price_a: Number(e.target.value) })}
-                  className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-2.5 text-sm text-white font-mono"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs text-silver-400 mb-1">Model A Pre-Order Rate (৳)</label>
-                <input
-                  type="number"
-                  required
-                  value={settings.price_preorder_a}
-                  onChange={(e) => setSettings({ ...settings, price_preorder_a: Number(e.target.value) })}
-                  className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-2.5 text-sm text-white font-mono"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs text-silver-400 mb-1">Model B Retail MRP (৳)</label>
-                <input
-                  type="number"
-                  required
-                  value={settings.price_b}
-                  onChange={(e) => setSettings({ ...settings, price_b: Number(e.target.value) })}
-                  className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-2.5 text-sm text-white font-mono"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs text-silver-400 mb-1">Model B Pre-Order Rate (৳)</label>
-                <input
-                  type="number"
-                  required
-                  value={settings.price_preorder_b}
-                  onChange={(e) => setSettings({ ...settings, price_preorder_b: Number(e.target.value) })}
-                  className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-2.5 text-sm text-white font-mono"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs text-silver-400 mb-1">Mounting Bracket Kit Price (৳)</label>
-                <input
-                  type="number"
-                  required
-                  value={settings.bracket_price}
-                  onChange={(e) => setSettings({ ...settings, bracket_price: Number(e.target.value) })}
-                  className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-2.5 text-sm text-white font-mono"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Delivery Rates */}
-          <div className="bg-carbon-850 p-6 rounded-2xl border border-carbon-700 shadow-glass-panel">
-            <h2 className="text-sm font-bold text-white mb-4">Delivery Pass-Through Rates (Pathao Courier)</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs text-silver-400 mb-1">Inside Dhaka Courier Fee (৳)</label>
-                <input
-                  type="number"
-                  required
-                  value={settings.delivery_dhaka}
-                  onChange={(e) => setSettings({ ...settings, delivery_dhaka: Number(e.target.value) })}
-                  className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-2.5 text-sm text-white font-mono"
-                />
-              </div>
-              <div>
-                <label className="block text-xs text-silver-400 mb-1">Outside Dhaka Courier Fee (৳)</label>
-                <input
-                  type="number"
-                  required
-                  value={settings.delivery_outside}
-                  onChange={(e) => setSettings({ ...settings, delivery_outside: Number(e.target.value) })}
-                  className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-2.5 text-sm text-white font-mono"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Urgency Text & Contacts */}
-          <div className="bg-carbon-850 p-6 rounded-2xl border border-carbon-700 shadow-glass-panel">
-            <h2 className="text-sm font-bold text-white mb-4">Urgency Announcement & Hotlines</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs text-silver-400 mb-1">Urgency Bar Announcement Text</label>
-                <input
-                  type="text"
-                  required
-                  value={settings.urgency_text}
-                  onChange={(e) => setSettings({ ...settings, urgency_text: e.target.value })}
-                  className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-2.5 text-sm text-white font-bangla"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs text-silver-400 mb-1">Hotline & bKash Number</label>
-                  <input
-                    type="text"
-                    required
-                    value={settings.hotline}
-                    onChange={(e) => setSettings({ ...settings, hotline: e.target.value })}
-                    className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-2.5 text-sm text-white font-mono"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs text-silver-400 mb-1">WhatsApp Paper Verification Number</label>
-                  <input
-                    type="text"
-                    required
-                    value={settings.whatsapp}
-                    onChange={(e) => setSettings({ ...settings, whatsapp: e.target.value })}
-                    className="w-full bg-carbon-800 border border-carbon-700 rounded-xl px-4 py-2.5 text-sm text-white font-mono"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </form>
-      </main>
-    </div>
-  );
+  const router = useRouter(); const [products, setProducts] = useState<Product[]>([]); const [shipping, setShipping] = useState<Shipping[]>([]); const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const [notice, setNotice] = useState(''); const [loaded, setLoaded] = useState(false);
+  const [newKey, setNewKey] = useState(''); const [newType, setNewType] = useState('product');
+  const generation = useRef(0);
+  const alive = useRef(true);
+  async function load() { if (!alive.current) return; const current = ++generation.current; setBusy(true); try { const res = await fetch('/api/admin/settings', { cache: 'no-store' }); const data = await res.json(); if (current !== generation.current) return; if (res.status === 401) { router.push('/admin/login'); return; } if (!res.ok) throw new Error(data.error); if (!data.products || !data.shipping_methods) throw new Error('The parent commerce catalog is not configured.'); setProducts(data.products); setShipping(data.shipping_methods); setLoaded(true); } catch (err: any) { if (current === generation.current) { setError(err.message || 'Unable to load catalog.'); setLoaded(false); } } finally { if (current === generation.current) setBusy(false); } }
+  useEffect(() => { alive.current = true; load(); return () => { alive.current = false; ++generation.current; }; }, []);
+  async function save(type: string, item: Product | Shipping) {
+    if (!alive.current || busy) return;
+    setBusy(true); setError(''); setNotice('');
+    const p = item as Product, s = item as Shipping;
+    const input = type === 'product' ? { expected_version: p.version, title: p.title, unit_price_minor: p.unit_price_minor, currency: 'BDT', active: p.active, kind: p.kind, metadata: p.metadata } : { expected_version: s.version, label: s.label, price_minor: s.price_minor, active: s.active };
+    try { const res = await fetch('/api/admin/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type, key: type === 'product' ? p.sku : s.code, input }) }); const data = await res.json(); if (!alive.current) return; if (!res.ok) throw new Error(data.error); await load(); if (!alive.current) return; setNotice('Catalog change saved. New requests use this version; existing request prices stay unchanged.'); } catch (err: any) { if (alive.current) setError((err.message || 'Save not confirmed.') + ' Reload before retrying.'); } finally { if (alive.current) setBusy(false); }
+  }
+  function add() { if (!alive.current || busy) return; const key = newKey.trim(); if (!/^[a-zA-Z0-9_-]{1,80}$/.test(key)) { setError('Use a unique key with letters, digits, hyphens or underscores.'); return; } if (newType === 'product') { if (products.some(p => p.sku === key)) return; setProducts([...products, { sku: key, title: '', unit_price_minor: 0, currency: 'BDT', active: false, kind: 'plate', metadata: {}, version: 0 }]); } else { if (shipping.some(s => s.code === key)) return; setShipping([...shipping, { code: key, label: '', price_minor: 0, active: false, version: 0 }]); } setNewKey(''); }
+  const inputClass = 'w-full bg-carbon-800 border border-carbon-700 p-2 rounded-lg';
+  return <div className="min-h-screen bg-carbon-900 text-silver-200"><AdminHeader title="Catalog settings" active="settings" busy={busy} onLogoutStart={() => { alive.current = false; ++generation.current; setBusy(true); }} onLogoutFailure={() => { alive.current = true; load(); }}/><main className="max-w-4xl mx-auto p-5 space-y-6"><p>Prices are stored as integer poisha (100 poisha = ৳1). Only saved catalog versions price new requests. No payment gateway is enabled.</p>{error && <p role="alert" className="text-red-300">{error}</p>}{notice && <p role="status" className="text-emerald-300">{notice}</p>}<button disabled={busy} onClick={() => { setError(''); load(); }} className="border border-carbon-600 rounded-lg p-2">Reload saved catalog</button>
+      <h2 className="text-xl text-white">Products</h2>{products.map((p, index) => <form key={p.sku} onSubmit={e => { e.preventDefault(); save('product', p); }} className="border border-carbon-700 rounded-xl p-4 grid sm:grid-cols-2 gap-3"><h3 className="sm:col-span-2 font-bold">{p.sku} · version {p.version}</h3><label>Title<input required value={p.title} onChange={e => setProducts(products.map((x,i) => i === index ? {...x,title:e.target.value} : x))} className={inputClass}/></label><label>Price in poisha<input type="number" min={0} step={1} required value={p.unit_price_minor} onChange={e => setProducts(products.map((x,i) => i === index ? {...x,unit_price_minor:Number(e.target.value)} : x))} className={inputClass}/></label><label>Kind<select value={p.kind} onChange={e => setProducts(products.map((x,i) => i === index ? {...x,kind:e.target.value} : x))} className={inputClass}><option value={p.kind}>{p.kind}</option>{['plate','bracket'].filter(k => k !== p.kind).map(k => <option key={k}>{k}</option>)}</select></label><label>BNP model mapping<select value={String(p.metadata?.model || '')} onChange={e => setProducts(products.map((x,i) => i === index ? {...x,metadata:{...x.metadata,model:e.target.value}} : x))} className={inputClass}><option value="">None (accessory)</option><option>A</option><option>B</option></select></label><label><input type="checkbox" checked={p.active} onChange={e => setProducts(products.map((x,i) => i === index ? {...x,active:e.target.checked} : x))}/> Active</label><button disabled={busy || !loaded} className="bg-bnp rounded-lg p-2 text-white">Save product</button></form>)}
+      <h2 className="text-xl text-white">Shipping options</h2><p>Give each option an explicit service-area label. District alone does not determine city delivery pricing.</p>{shipping.map((s,index) => <form key={s.code} onSubmit={e => { e.preventDefault(); save('shipping', s); }} className="border border-carbon-700 rounded-xl p-4 grid sm:grid-cols-2 gap-3"><h3 className="sm:col-span-2 font-bold">{s.code} · version {s.version}</h3><label>Service-area label<input required value={s.label} onChange={e => setShipping(shipping.map((x,i) => i === index ? {...x,label:e.target.value} : x))} className={inputClass}/></label><label>Price in poisha<input type="number" min={0} step={1} required value={s.price_minor} onChange={e => setShipping(shipping.map((x,i) => i === index ? {...x,price_minor:Number(e.target.value)} : x))} className={inputClass}/></label><label><input type="checkbox" checked={s.active} onChange={e => setShipping(shipping.map((x,i) => i === index ? {...x,active:e.target.checked} : x))}/> Active</label><button disabled={busy || !loaded} className="bg-bnp rounded-lg p-2 text-white">Save shipping option</button></form>)}
+      {loaded && <div className="flex flex-wrap gap-3"><select aria-label="New catalog entry type" value={newType} onChange={e => setNewType(e.target.value)} className="bg-carbon-800 p-2"><option value="product">Product</option><option value="shipping">Shipping option</option></select><input aria-label="New catalog entry key" placeholder="Unique SKU or shipping code" value={newKey} onChange={e => setNewKey(e.target.value)} className="bg-carbon-800 p-2"/><button disabled={busy} onClick={add} className="border border-carbon-600 p-2 rounded-lg">Add unsaved entry</button></div>}
+      <PathaoRewardsPanel/>
+    </main></div>;
 }
