@@ -2,7 +2,7 @@
   "name": "bnp-shop",
   "version": "1.0.0",
   "private": true,
-  "description": "BNP: Bike Number Plate — Premium Quality Mirror Silver Steel Plates",
+  "description": "BNP: Bike Number Plate \u2014 Premium Quality Mirror Silver Steel Plates",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -11,7 +11,8 @@
     "db:migrate": "node scripts/migrate.mjs",
     "seed:admin": "node scripts/seed-admin.mjs",
     "test:bengali": "node --experimental-strip-types scripts/test-bengali.mjs",
-    "test:crypto": "node --experimental-strip-types scripts/test-crypto.mjs"
+    "test:crypto": "node --experimental-strip-types scripts/test-crypto.mjs",
+    "test": "node --test tests/*.test.mjs"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

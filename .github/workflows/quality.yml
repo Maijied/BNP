@@ -29,7 +29,7 @@ jobs:
       - name: Install locked dependencies
         run: npm ci --no-audit --no-fund
       - name: Validate Cloudflare admin session security
-        run: node --test tests/cloudflare-admin-auth.test.mjs
+        run: node --test tests/*.test.mjs
       - name: Typecheck
         run: npx tsc --noEmit
       - name: Build static export
@@ -40,3 +40,4 @@ jobs:
           test -f out/admin/login.html -o -f out/admin/login/index.html
           test -f out/admin/orders.html -o -f out/admin/orders/index.html
           test -f out/admin/settings.html -o -f out/admin/settings/index.html
+

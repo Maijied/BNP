@@ -6,6 +6,8 @@
 
 ---
 
+> **Release status (2026-11-05):** Public checkout, verified settlement and customer order lookup are disabled pending durable payment integration. Pathao courier support is a disabled-by-default draft; see [the integration and launch gates](docs/PATHAO_INTEGRATION.md). Some legacy feature descriptions below describe intended rather than deployed functionality.
+
 ## Overview
 
 BNP (Bike Number Plate) is a modern full-stack e-commerce platform and administration portal engineered for custom, laser-cut mirror-silver stainless steel (0.8 mm, Finish No. 8) and BRTA-compliant aluminum motorcycle and scooter number plates in Bangladesh.
@@ -93,3 +95,4 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ## License
 
 Private and proprietary. Copyright © Joy & Arash Enterprise. All rights reserved.
+
