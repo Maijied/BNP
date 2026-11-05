@@ -31,3 +31,7 @@ Adobe Firefly hero art and HeyGen 5-second 1080p conceptual motion have been cre
 
 ## Release security note
 Cloudflare environment values can be changed without code review; run the same staging review when changing secrets, D1 bindings or routes. Admin settings are currently read-only because changes are not persisted into the server-side order price path. Never present sample orders, mock payment receipts or an admin-modified payment status as real transactions.
+
+
+## Pathao draft integration
+See [PATHAO_INTEGRATION.md](PATHAO_INTEGRATION.md) for the prepaid courier implementation and owner setup. Apply staging migration `0003_pathao_shipments.sql` after the previous migrations. Checkout, settlement and real dispatch remain blocked until the payment and provider-contract gates pass. Never backfill settlement proof from paid flags.

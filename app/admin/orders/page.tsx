@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import PathaoShipmentPanel from "@/components/PathaoShipmentPanel";
 import { OrderRecord, OrderStatus, PaymentStatus } from "@/lib/types";
 import {
   Search,
@@ -300,6 +301,7 @@ export default function AdminOrdersPage() {
                           <MessageCircle className="w-3.5 h-3.5 fill-current" />
                           <span>WhatsApp</span>
                         </a>
+                        <PathaoShipmentPanel orderId={order.id} orderStatus={order.status} />
                       </td>
                     </tr>
                   ))
@@ -312,3 +314,4 @@ export default function AdminOrdersPage() {
     </div>
   );
 }
+
