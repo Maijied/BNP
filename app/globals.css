@@ -73,3 +73,47 @@
     inset 0 -1px 2px rgba(0, 0, 0, 0.7),
     0 4px 12px rgba(0, 0, 0, 0.5);
 }
+
+/* Cinematic motion system: CSS-only, composited, reduced-motion safe. */
+.bnp-cinematic-hero::before {
+  content: "";
+  position: absolute;
+  inset: -30% -10%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 70% 35%, rgba(225,29,46,.18), transparent 44%),
+    repeating-linear-gradient(115deg, transparent 0 110px, rgba(255,255,255,.025) 111px 112px);
+  animation: bnp-hero-drift 18s ease-in-out infinite alternate;
+}
+.bnp-cinematic-hero::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,.035) 50%, transparent 70%);
+  background-size: 220% 100%;
+  animation: bnp-light-sweep 9s ease-in-out infinite;
+}
+.bnp-cinematic-hero h1 {
+  text-wrap: balance;
+  animation: bnp-hero-enter .85s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes bnp-hero-drift {
+  from { transform: translate3d(-2%,0,0) scale(1); }
+  to { transform: translate3d(2%,2%,0) scale(1.06); }
+}
+@keyframes bnp-light-sweep {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+@keyframes bnp-hero-enter {
+  from { opacity: 0; transform: translate3d(0,20px,0); }
+  to { opacity: 1; transform: translate3d(0,0,0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bnp-cinematic-hero::before,
+  .bnp-cinematic-hero::after,
+  .bnp-cinematic-hero h1 { animation: none !important; }
+}
