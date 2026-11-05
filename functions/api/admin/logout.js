@@ -1,10 +1,8 @@
-// Cloudflare Pages Function: /api/admin/logout
-export async function onRequestPost() {
-  return new Response(JSON.stringify({ success: true }), {
-    status: 200,
-    headers: {
-      "Content-Type": "application/json",
-      "Set-Cookie": "bnp_admin_session=; Path=/; HttpOnly; Max-Age=0",
-    },
-  });
+import { clearSessionCookie, isSameOrigin, json } from "../../_lib/admin-auth.js";
+
+export async function onRequestPost({ request }) {
+  if (!isSameOrigin(request)) return json({ error: "Cross-origin request denied." }, 403);
+  const response = json({ success: true });
+  response.headers.set("Set-Cookie", clearSessionCookie());
+  return response;
 }
