@@ -2,9 +2,9 @@ export type PlateModel = "A" | "B";
 
 export type PaymentMethod = "lorahost_bridge" | "manual_bkash" | "manual_nagad";
 
-export type PaymentStatus = "pending_payment" | "verifying" | "paid" | "failed";
+export type PaymentStatus = "unpaid" | "pending" | "paid" | "failed" | "refunded" | "disputed" | "pending_payment" | "verifying";
 
-export type OrderStatus = "new" | "confirmed" | "printed" | "shipped" | "delivered";
+export type OrderStatus = "new" | "verification" | "production" | "qc" | "shipped" | "delivered" | "cancelled";
 
 export interface OrderInput {
   name: string;
@@ -23,7 +23,7 @@ export interface OrderInput {
 }
 
 export interface OrderRecord {
-  id: number;
+  id: string;
   order_number: string;
   created_at: string;
   name: string;
