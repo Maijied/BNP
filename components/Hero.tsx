@@ -3,7 +3,14 @@ import { ShieldCheck, Award, ArrowRight, Zap, CheckCircle2, Sparkles, ExternalLi
 
 export default function Hero() {
   return (
-    <section className="bnp-cinematic-hero relative isolate overflow-hidden pt-16 pb-20 lg:pt-28 lg:pb-32 border-b border-carbon-700/50 bg-carbon-gradient">
+    <section className="bnp-cinematic-hero group/hero relative isolate overflow-hidden pt-16 pb-20 lg:pt-28 lg:pb-32 border-b border-carbon-700/50 bg-carbon-gradient">
+      {/* Cinematic motion layers are decorative and honor reduced-motion preferences. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 opacity-30" style={{backgroundImage:"linear-gradient(115deg, transparent 15%, rgba(225,29,46,.15) 45%, transparent 70%), repeating-linear-gradient(0deg, transparent 0 58px, rgba(255,255,255,.035) 59px 60px)"}} />
+        <div className="absolute -right-24 top-12 h-[36rem] w-[36rem] rounded-full border border-red-500/15 motion-safe:animate-[spin_60s_linear_infinite]" />
+        <div className="absolute -right-10 top-28 h-[28rem] w-[28rem] rounded-full border border-white/10 motion-safe:animate-[spin_45s_linear_infinite_reverse]" />
+        <div className="absolute -left-24 bottom-10 h-px w-[70%] -rotate-12 bg-gradient-to-r from-transparent via-red-500/60 to-transparent" />
+      </div>
       {/* Background Accent Gradients */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-bnp-glow/10 filter blur-3xl pointer-events-none" />
       <div className="absolute top-1/4 right-10 w-72 h-72 bg-gold/5 filter blur-3xl pointer-events-none" />
@@ -28,9 +35,9 @@ export default function Hero() {
             </div>
 
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-display font-extrabold tracking-tight text-white leading-[1.15] mb-5">
-              Precision Built. <br className="hidden sm:inline" />
+              Engineered to Stand Out. <br className="hidden sm:inline" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-silver-100 via-silver-400 to-silver-600">
-                Made to Ride.
+                Precision in Every Detail.
               </span>
             </h1>
 
@@ -43,7 +50,7 @@ export default function Hero() {
             {/* Brand storytelling stays customer-first; partner credit belongs in the footer. */}
             <div className="mb-8 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-silver-400">
               <span className="h-px w-10 bg-bnp" />
-              Engineered for the ride
+              THE PERFORMANCE COLLECTION
               <span className="h-px w-10 bg-bnp" />
             </div>
 
@@ -96,7 +103,7 @@ export default function Hero() {
 
           {/* Right Column: Visual Plate Mockup Card */}
           <div className="lg:col-span-5 flex flex-col items-center">
-            <div className="w-full max-w-md bg-carbon-900/90 rounded-3xl border border-carbon-700/80 p-6 sm:p-8 shadow-glass-panel relative backdrop-blur-xl">
+            <div className="w-full max-w-md bg-carbon-900/90 rounded-3xl border border-carbon-700/80 p-6 sm:p-8 shadow-glass-panel relative backdrop-blur-xl transition-transform duration-700 motion-safe:hover:-translate-y-2 motion-safe:hover:rotate-[0.5deg]">
               {/* Highlight Tag */}
               <div className="flex items-center justify-between mb-6">
                 <span className="text-xs font-mono font-semibold uppercase tracking-wider text-silver-400 flex items-center gap-1.5">
@@ -108,8 +115,9 @@ export default function Hero() {
               </div>
 
               {/* Realistic Preview Plate Preview Box */}
-              <div className="w-full aspect-[285/50] max-h-24 rounded-lg bg-gradient-to-b from-silver-100 via-silver-300 to-silver-500 p-[3px] shadow-2xl relative mb-6 overflow-hidden">
+              <div className="group/plate w-full aspect-[285/50] max-h-24 rounded-lg bg-gradient-to-b from-silver-100 via-silver-300 to-silver-500 p-[3px] shadow-2xl relative mb-6 overflow-hidden">
                 <div className="w-full h-full rounded-[5px] bg-gradient-to-r from-silver-200 via-silver-100 to-silver-300 flex items-center justify-between px-3 border border-silver-400 relative">
+                  <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/3 skew-x-[-24deg] bg-gradient-to-r from-transparent via-white/70 to-transparent opacity-0 motion-safe:group-hover/plate:opacity-100 motion-safe:group-hover/plate:translate-x-[650%] transition-all duration-[1400ms]" />
                   {/* Left Bolt Slot */}
                   <div className="w-2.5 h-4 rounded-full bg-carbon-900/90 border border-silver-600 shrink-0 shadow-inner" />
                   
